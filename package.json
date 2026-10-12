@@ -1,0 +1,14 @@
+{
+  "name": "az400-lab",
+  "version": "1.0.0",
+  "description": "Mini app per gli esercizi di laboratorio AZ-400",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
