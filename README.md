@@ -14,7 +14,7 @@ Endpoint: `/` (saluto), `/health` (JSON `{"status":"ok"}`).
 Spunta man mano. Per ognuno: fai, rompi, annota.
 
 - [x] 1. Branch policy Azure DevOps su `main`
-- [ ] 2. Branch protection / ruleset GitHub su `main`
+- [x] 2. Branch protection / ruleset GitHub su `main`
 - [ ] 3. Ruleset su path, estensioni e dimensione file
 - [ ] 4. CODEOWNERS
 - [ ] 5. Git LFS e pulizia storia
@@ -35,7 +35,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [ ] 20. Azure Boards e integrazione GitHub
 
 ### Aggiunti dopo il confronto con la study guide (skills measured al 27/07/2026)
-e
+
 Priorità alta (area pipeline, 50-55%): 21-25.
 
 - [ ] 21. Feed con views e upstream, versioning SemVer/CalVer, GitHub Packages
