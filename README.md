@@ -15,8 +15,8 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 
 - [x] 1. Branch policy Azure DevOps su `main`
 - [x] 2. Branch protection / ruleset GitHub su `main`
-- [ ] 3. Ruleset su path, estensioni e dimensione file
-- [ ] 4. CODEOWNERS
+- [x] 3. Ruleset su path, estensioni e dimensione file
+- [x] 4. CODEOWNERS
 - [ ] 5. Git LFS e pulizia storia
 - [ ] 6. Pipeline YAML base (build + test)
 - [ ] 7. Multi-stage con approvazione environment
