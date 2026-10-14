@@ -20,7 +20,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 5. Git LFS e pulizia storia
 - [x] 6. Pipeline YAML base (build + test)
 - [x] 7. Multi-stage con approvazione environment
-- [ ] 8. Variable group, secure variable, template
+- [x] 8. Variable group, secure variable, template
 - [ ] 9. Service connection (workload identity federation)
 - [ ] 10. Agent self-hosted
 - [ ] 11. Azure Artifacts
