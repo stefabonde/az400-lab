@@ -16,7 +16,7 @@ after(() => server.close());
 test('GET / risponde con il saluto', async () => {
   const res = await fetch(`${base}/`);
   assert.strictEqual(res.status, 200);
-  assert.match(await res.text(), /Hello AZ-400/);
+  assert.match(await res.text(), /Ciao/);
 });
 
 test('GET /health risponde ok', async () => {
