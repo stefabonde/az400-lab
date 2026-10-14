@@ -195,11 +195,22 @@ Azure DevOps (`dev.azure.com`) e portale Azure (`portal.azure.com`) sono **prodo
 
 ## 10. Agent self-hosted
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Organization settings → Pipelines → Agent pools → *Default* → New agent (scarica lo zip per l'OS). Registrazione: `./config.sh` (URL org, auth PAT, pool, nome), avvio `./run.sh` (oppure servizio con `./svc.sh install`). Pipeline: `pool: name: Default` + `demands: - Agent.Name -equals mac-mini`.
+- **Cosa fa**: esegue i job sulla **tua** macchina invece che su una VM Microsoft. L'agent apre una connessione **in uscita** verso Azure DevOps e chiede lavoro: nessuna porta in ingresso da aprire.
+- **PAT**: serve solo per registrare l'agent. Scope minimo **Agent Pools → Read & manage**, scadenza breve, revocabile dopo (l'agent resta registrato).
+- **Errori visti**: `Killed: 9` all'avvio di `config.sh` → quarantena macOS (`xattr -dr com.apple.quarantine`); `Azure CLI 2.x is not installed on this machine` → sull'agent self-hosted i tool li installi tu (`brew install azure-cli`); job **in coda** con agent offline o demand non soddisfatta.
+- **Hosted vs self-hosted**:
+
+  | | Microsoft-hosted | Self-hosted |
+  |---|---|---|
+  | Tool | preinstallati dall'immagine | solo quelli che installi |
+  | Macchina | nuova a ogni job | sempre la stessa (stato persistente) |
+  | Rete | internet pubblico | raggiunge reti private / on-prem |
+  | Manutenzione | Microsoft | tu (aggiornamenti, sicurezza) |
+  | Free tier | 1800 min/mese | 1 job parallelo gratis |
+
+- **Trabocchetti**: l'agent eredita il `PATH` della shell che lo avvia (tool nuovi → riavvia l'agent); `vmImage` e `name` nel `pool` sono alternativi; le *demands* sono capability richieste, non il nome del pool; un agent su una macchina condivisa può lasciare file/segreti tra un job e l'altro.
+- **Domanda tipo**: "build che deve raggiungere un database on-prem / usare una licenza o hardware specifico" → agent self-hosted; "job in attesa indefinita" → nessun agent online che soddisfi le demands; "ridurre la manutenzione degli agent" → Microsoft-hosted o Virtual Machine Scale Set agents.
 
 ## 11. Azure Artifacts
 
