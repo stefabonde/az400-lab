@@ -58,11 +58,14 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 
 ## 6. Pipeline YAML base (build + test)
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Pipelines → Create Pipeline → Azure Repos Git → file `azure-pipelines.yml` nel repo. Build validation: Repos → Branches → `⋯` su `main` → Branch policies → Build validation.
+- **Cosa fa**: `trigger:` avvia la pipeline sui push (CI) ai branch elencati, con filtri `paths`; `pool: vmImage` sceglie l'agent Microsoft-hosted; `steps` sono i passi (`NodeTool@0`, `script: npm test`).
+- **Due meccanismi distinti**: CI trigger (YAML, push su `main`) e **Build validation** (policy, PR). Ciascuno ha i **suoi** filtri percorsi: un README-only può non far partire il CI ma far partire comunque la validation se il path filter della policy è vuoto.
+- **`pr:` nel YAML**: vale solo per repo GitHub/Bitbucket; su Azure Repos le PR si validano con la Build validation.
+- **Errori visti**: "Could not find valid pipeline YAML file for this branch/tag" = il YAML non esiste in quel branch (era solo su `feature/pipeline`, PR non completata). Passo *Esegui test* rosso con test modificato, PR bloccata finché non torna verde.
+- **Trabocchetti**: la pipeline non è legata a un branch, è un puntatore al file YAML letto dal branch scelto al run. Il motivo di una run si legge sotto il titolo ("PR automated for…" / "Individual CI for…"). Un "Override the YAML trigger" in *Triggers* comanda sul YAML. Il run manuale permette di scegliere il branch.
+- **Free tier**: 1800 min/mese Microsoft-hosted, 1 job parallelo (la richiesta via modulo è dismessa).
+- **Domanda tipo**: "esegui i test a ogni PR verso main e blocca il merge se falliscono" → Build validation (Required) sulla branch policy.
 
 ## 7. Multi-stage con approvazione environment
 
