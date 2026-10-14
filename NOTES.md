@@ -75,15 +75,17 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 - **Trabocchetti**: la **Build validation** esegue la pipeline intera, deploy compresi: serve una `condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))` sugli stage di deploy (su PR risultano *skipped*). Pre-autorizzare tutte le pipeline: Environment → `⋯` → Security → Pipeline permissions. Opzione *Allow approvers to approve their own runs* se sei l'unico utente.
 - **Differenze**: `job` normale contro `deployment` job (storia dei deployment sull'environment, strategie runOnce/rolling/canary). Permit (accesso alla risorsa) contro Approval (consenso umano).
 - **Deprecazioni**: `NodeTool@0` → `UseNode@1`.
+- **Dopo il merge**: la CI su `main` parte solo se il commit tocca percorsi inclusi nei `paths` del trigger; una PR che modifica solo il YAML o il README non la fa partire (serve run manuale o includere il file nei `paths`).
 - **Domanda tipo**: "il deploy in produzione deve richiedere l'approvazione di un responsabile" → environment `prod` con check di tipo Approvals.
 
 ## 8. Variable group, secure variable, template
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Pipelines → Library → + Variable group. Nel YAML: `variables: - group: app-config`. Template: file in `templates/` richiamato con `- template: templates/test-steps.yml` e `parameters:`.
+- **Cosa fa**: il **variable group** raccoglie variabili riusabili da più pipeline; il **lucchetto** rende un valore segreto (non leggibile, mascherato nei log). Il **template** evita di ripetere gli stessi passi e accetta `parameters` con tipo e valore di default.
+- **Visto nei log**: variabile normale stampata; variabile segreta stampata come `***`.
+- **Trabocchetti**: il gruppo va **autorizzato** alla pipeline (*Permit* alla prima esecuzione, o Library → gruppo → Security → Pipeline permissions). `${{ parameters.x }}` è valutato in **compilazione**, `$(var)` a **runtime**. Il mascheramento non è una protezione completa: se trasformi il valore (`rev`, `base64`) non viene più riconosciuto. I segreti non arrivano come variabili d'ambiente ai passi se non li mappi con `env:`. Togliendo `- group:` il `$(VAR)` resta testo letterale, senza errore.
+- **Alternative**: variable group collegato ad **Azure Key Vault** (esercizio 16); *secure files* per file sensibili (27).
+- **Domanda tipo**: "evita di duplicare i passi in più pipeline" → template; "rendi la chiave non visibile ai membri del team" → variabile segreta nel group / Key Vault.
 
 ## 9. Service connection (workload identity federation)
 
