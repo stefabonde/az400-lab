@@ -69,11 +69,13 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 
 ## 7. Multi-stage con approvazione environment
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Pipelines → Environments → New environment → `⋯` → *Approvals and checks*. Nel YAML: `stages:` con `deployment:` job, `environment: <nome>`, `strategy: runOnce: deploy: steps:`.
+- **Cosa fa**: gli **environment** sono risorse protette su cui agganciare controlli (approval, branch control, business hours, ecc.). Uno stage che punta a un environment si ferma finché i check non sono soddisfatti. `dependsOn` stabilisce l'ordine degli stage.
+- **Errori visti**: "Environment dev could not be found. The environment does not exist or has not been authorized for use" (due cause: non esiste / pipeline non autorizzata). Stage in *Waiting — Permission needed* = serve **Permit** (alla prima volta per ogni environment); poi l'**approvazione** configurata sull'environment.
+- **Trabocchetti**: la **Build validation** esegue la pipeline intera, deploy compresi: serve una `condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))` sugli stage di deploy (su PR risultano *skipped*). Pre-autorizzare tutte le pipeline: Environment → `⋯` → Security → Pipeline permissions. Opzione *Allow approvers to approve their own runs* se sei l'unico utente.
+- **Differenze**: `job` normale contro `deployment` job (storia dei deployment sull'environment, strategie runOnce/rolling/canary). Permit (accesso alla risorsa) contro Approval (consenso umano).
+- **Deprecazioni**: `NodeTool@0` → `UseNode@1`.
+- **Domanda tipo**: "il deploy in produzione deve richiedere l'approvazione di un responsabile" → environment `prod` con check di tipo Approvals.
 
 ## 8. Variable group, secure variable, template
 

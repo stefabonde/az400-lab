@@ -19,7 +19,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 4. CODEOWNERS
 - [x] 5. Git LFS e pulizia storia
 - [x] 6. Pipeline YAML base (build + test)
-- [ ] 7. Multi-stage con approvazione environment
+- [x] 7. Multi-stage con approvazione environment
 - [ ] 8. Variable group, secure variable, template
 - [ ] 9. Service connection (workload identity federation)
 - [ ] 10. Agent self-hosted
