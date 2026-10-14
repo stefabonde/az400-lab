@@ -17,7 +17,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 2. Branch protection / ruleset GitHub su `main`
 - [x] 3. Ruleset su path, estensioni e dimensione file
 - [x] 4. CODEOWNERS
-- [ ] 5. Git LFS e pulizia storia
+- [x] 5. Git LFS e pulizia storia
 - [ ] 6. Pipeline YAML base (build + test)
 - [ ] 7. Multi-stage con approvazione environment
 - [ ] 8. Variable group, secure variable, template

@@ -49,11 +49,12 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 
 ## 5. Git LFS e pulizia storia
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: `git lfs track "*.zip"` (scrive la regola in `.gitattributes`) per LFS; `git filter-repo --path <file> --invert-paths` per rimuovere dati dalla storia.
+- **Cosa fa**: LFS (Large File Storage) tiene nel repo solo un **puntatore** (`version`, `oid sha256`, `size`) e il contenuto vero in uno store separato, scaricato quando serve. `filter-repo` **riscrive la storia** togliendo file o testo.
+- **Verifiche viste**: `git lfs ls-files` (`*` = contenuto presente in locale, `-` = solo puntatore); `git show HEAD:file.zip` mostra il puntatore; `git log --all -- file` vuoto dopo la pulizia; hash dei commit cambiati; `git remote -v` vuoto (filter-repo scollega il remote).
+- **Trabocchetti**: LFS **non è retroattivo** (i file già committati restano normali, serve `git lfs migrate`). `git revert` aggiunge un commit ma il segreto resta nella storia (`git log -S` lo trova). Dopo la riscrittura serve `push --force`, che un ruleset con *Block force pushes* impedisce. Il segreto già pubblicato va comunque **ruotato**. Per togliere un testo da un file: `--replace-text`.
+- **Alternative citate nella study guide**: `git-fat` (file grandi), BFG (pulizia storia). Scalar per repo molto grandi.
+- **Domanda tipo**: "un segreto è stato committato, come lo rimuovi dalla storia?" → filter-repo / BFG, non revert; "gestire file grandi" → Git LFS.
 
 ## 6. Pipeline YAML base (build + test)
 
