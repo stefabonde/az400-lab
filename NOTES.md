@@ -12,6 +12,103 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 5. Prima di cliccare: dove (ADO/GitHub), ambito (repo/progetto/org), verbo (limitare/abilitare).
 6. Dopo ogni modifica, prova a violarla: se non ti blocca, è configurata male.
 
+## Concetti fondamentali (glossario)
+
+### Azure: la gerarchia
+
+```
+Directory (tenant Entra ID)   -> chi esiste (utenti, app, gruppi)
+  └─ Sottoscrizione           -> chi paga, quote, fatturazione
+       └─ Resource group      -> contenitore con un ciclo di vita
+            └─ Risorse        -> web app, storage, Key Vault, VM...
+```
+
+| Concetto | Cos'è | A cosa serve | Da ricordare |
+|---|---|---|---|
+| **Directory / tenant (Entra ID)** | l'anagrafica di utenti, gruppi e app di un'organizzazione | decide **chi può entrare** | un account può stare in più directory: si cambia con *Switch directory* |
+| **Sottoscrizione** | l'accordo di fatturazione con Azure | contiene le risorse e ne raccoglie i costi | appartiene a **una** directory |
+| **Resource group** | contenitore **vero** di risorse | organizzare, dare permessi mirati, vedere i costi, **eliminare in blocco** | una risorsa sta in **un solo** gruppo (si può spostare); eliminare il gruppo elimina tutto dentro |
+| **Tag** | etichetta chiave/valore (`ambiente=dev`) | filtrare e raggruppare i costi anche tra gruppi diversi | non cancella e non raggruppa fisicamente; una risorsa ne ha molti; non ereditano da soli |
+| **Risorsa** | il servizio concreto (web app, storage...) | fa il lavoro | vive in un gruppo e in una regione |
+
+### Identità in Azure
+
+| Concetto | Cos'è | Credenziale | Quando |
+|---|---|---|---|
+| **Utente** | una persona | password + MFA | accesso umano |
+| **Service principal** | identità di un'**app/servizio** in Entra | segreto, certificato o federation | pipeline, script, automazioni |
+| **App registration** | la *definizione* dell'app; il service principal è la sua *istanza* nella directory | - | creata in automatico dalla service connection |
+| **Managed identity** | service principal le cui credenziali gestisce **Azure** | nessuna da custodire | codice che gira *dentro* una risorsa Azure (VM, web app, agent self-hosted su VM Azure) |
+| **Workload identity federation (OIDC)** | Entra si fida dei token firmati da Azure DevOps/GitHub | **nessun segreto** | metodo raccomandato per le pipeline |
+
+Ruoli (RBAC): si assegnano a un'identità su un **ambito** (sottoscrizione, resource group, risorsa). Regola: **privilegio minimo**, ambito il più stretto possibile.
+
+### Service connection (Azure DevOps)
+
+| Domanda | Risposta |
+|---|---|
+| Cos'è | il collegamento autorizzato tra Azure DevOps e un servizio esterno (qui Azure) |
+| Cosa contiene | quale **identità** usare e **dove** vale (sottoscrizione / resource group) |
+| Dove si crea | Project settings → Service connections |
+| Come la usi | nel YAML per nome, es. `azureSubscription: 'azure-lab'` |
+| Come si autentica | con federation: token generato per quella run, nessuna password |
+| Cosa controllare | scheda *Usage history*; in Entra la *federated credential*; in IAM il ruolo |
+| Va autorizzata | **Permit** alla prima esecuzione (come gli environment e i variable group) |
+
+Flusso con federation:
+
+```
+Run della pipeline
+  1. Azure DevOps genera un token per (org, progetto, connection)
+  2. la pipeline lo presenta a Entra (az login --federated-token)
+  3. Entra controlla issuer + subject della federated credential
+  4. la pipeline lavora con i permessi (ruolo) di quel service principal
+```
+
+### Azure DevOps: la gerarchia
+
+```
+Organizzazione  -> account, utenti, billing, parallel jobs
+  └─ Progetto   -> contenitore di lavoro
+       ├─ Repos      (Git, branch policy, repository policy)
+       ├─ Pipelines  (YAML, environment, library, service connection)
+       ├─ Boards     (work item, dashboard)
+       └─ Artifacts  (feed di pacchetti)
+```
+
+Azure DevOps (`dev.azure.com`) e portale Azure (`portal.azure.com`) sono **prodotti diversi**: il resource group sta nel secondo.
+
+### Pipeline: i pezzi
+
+| Concetto | Cos'è | Trabocchetto |
+|---|---|---|
+| **trigger** (CI) | avvia la pipeline su push, con filtri `branches` e `paths` | parte solo se il commit tocca i `paths` |
+| **Build validation** | policy di branch che esegue la pipeline sulle PR (Azure Repos) | `pr:` nel YAML vale solo per GitHub/Bitbucket; esegue **anche i deploy** → serve `condition` sul branch |
+| **Environment** | risorsa protetta con controlli (approvals, branch control...) | richiede *Permit* + approvazione |
+| **Variable group** | variabili riusabili, con segreti (lucchetto) | va autorizzato alla pipeline |
+| **Template** | pezzo di YAML riusabile con `parameters` | `${{ }}` in compilazione, `$(var)` a runtime |
+| **Permit** vs **Approval** | permesso della *pipeline* su una risorsa vs consenso *umano* | sono due cose distinte |
+
+### Git: file grandi e dati sensibili
+
+| Concetto | Cos'è | Da ricordare |
+|---|---|---|
+| **Git LFS** | nel repo resta un puntatore, il contenuto sta in uno store separato | non retroattivo (serve `git lfs migrate`) |
+| **git revert** | aggiunge un commit che annulla | il segreto **resta nella storia** |
+| **git filter-repo / BFG** | riscrive la storia rimuovendo file o testo | cambiano gli hash, serve force push; il segreto va comunque **ruotato** |
+
+### GitHub e Azure DevOps: gli equivalenti
+
+| Esigenza | GitHub | Azure DevOps |
+|---|---|---|
+| proteggere `main` | ruleset / branch protection rule | branch policy |
+| revisori per percorso | file `CODEOWNERS` + *Require review from Code Owners* | *Automatically included reviewers* (con filtro percorso) |
+| limitare file | push ruleset (size, extension, path) | repository policy (*Maximum file size*, path length) |
+| validare PR con la pipeline | `on: pull_request` nel workflow / `pr:` nel YAML | *Build validation* |
+| segreti | repository / environment secrets | variable group con lucchetto, Key Vault |
+| accesso ad Azure senza segreto | OIDC con `azure/login` | service connection con federation |
+| collegare lavoro e PR | `Closes #12`, pannello Development | work item collegato (policy *Check for linked work items*) |
+
 ## 1. Branch policy Azure DevOps su `main`
 
 - **Dove**: Repos → Branches → `⋯` su `main` → Branch policies.
@@ -89,11 +186,12 @@ Compilala subito dopo aver fatto l'esercizio (fai, rompi, annota).
 
 ## 9. Service connection (workload identity federation)
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: portale Azure → Resource groups (contenitore); Azure DevOps → Project settings → Service connections → New → Azure Resource Manager → *Workload identity federation (automatic)*. Verifica: Entra ID → App registrations → Federated credentials; resource group → Access control (IAM) → Role assignments.
+- **Cosa fa**: crea un'identità (service principal) senza segreti, con ruolo **Contributor** limitato al resource group, e il collegamento che la pipeline usa per nome (`azureSubscription: 'azure-lab'`). Vedi il glossario sopra.
+- **Cosa ha fatto il run**: solo **letture** (`az account show`, `az group show`); il gruppo è vuoto, quindi nessuna risorsa toccata. Ha dimostrato login federato, permessi sul gruppo e *Permit* sulla connection.
+- **Verifiche**: nel log `az login --service-principal … --federated-token ***` (nessuna password); *Usage history* della connection; sign-in dei service principal in Entra.
+- **Trabocchetti**: scegliere lo scope **resource group** e non la sottoscrizione (privilegio minimo); la creazione automatica può richiedere di collegare l'organizzazione a Entra; il nome nel YAML deve coincidere con la connection; serve *Permit* alla prima esecuzione.
+- **Domanda tipo**: "pipeline che accede ad Azure senza gestire segreti" → workload identity federation (o managed identity con agent su VM Azure); "service principal con segreto" → scade e va ruotato.
 
 ## 10. Agent self-hosted
 
