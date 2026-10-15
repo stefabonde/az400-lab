@@ -214,11 +214,25 @@ Azure DevOps (`dev.azure.com`) e portale Azure (`portal.azure.com`) sono **prodo
 
 ## 11. Azure Artifacts
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Azure DevOps → Artifacts → Create Feed (`lab-feed`, upstream sources attivo); Feed settings → Permissions / Views / Upstream sources; Connect to feed → npm per l'URL del registry. Nel repo: `.npmrc` con `registry=…/_packaging/lab-feed/npm/registry/`.
+- **Cosa fa**: il **feed** è il magazzino privato di pacchetti (npm, NuGet, Maven, Python, Universal) con permessi propri. La pipeline pubblica con `npmAuthenticate@0` + `npm publish`; il task inserisce nel `.npmrc` un token temporaneo del Build Service (nessun segreto salvato).
+- **Ruoli del feed**:
+
+  | Ruolo | Può |
+  |---|---|
+  | Feed Reader | scaricare pacchetti |
+  | Feed and Upstream Reader (Collaborator) | leggere + usare/salvare pacchetti da upstream |
+  | Feed Publisher (Contributor) | pubblicare |
+  | Feed Owner | gestire feed, permessi, views |
+
+- **Concetti**:
+  - **Upstream source**: il feed fa da proxy/cache verso registri pubblici (npmjs); i pacchetti usati vengono salvati nel feed.
+  - **View** (`@Local`, `@Prerelease`, `@Release`): sottoinsiemi del feed; si **promuove** una versione già pubblicata, non si ripubblica. I consumatori puntano a `@Release`.
+  - **Immutabilità**: una versione pubblicata non si sovrascrive; si incrementa `version` (SemVer `MAJOR.MINOR.PATCH`, pre-release `1.1.0-beta.1`; CalVer = per data).
+  - **Scope**: feed di progetto o di organizzazione (cambia l'URL e quale Build Service abilitare).
+- **Errori visti**: Build Service solo *Collaborator* → il publish dà 403 (serve *Contributor*); publish **saltato** nella PR per la condition su `main` (voluto); secondo publish stessa versione → **409**; job in coda con pool `Default` e agent spento.
+- **Trabocchetti**: `npmAuthenticate` richiede il `.npmrc` nel `workingFile`; il Build Service giusto è quello di **progetto** (`<progetto> Build Service`) o `Project Collection Build Service` se lo scope del job è collection; `.npmrc` con URL sbagliato → 401/404; non usare `npmAuthenticate` insieme al task `Npm@1` con service connection.
+- **Domanda tipo**: "403 nel publish" → ruolo Contributor al Build Service; "pubblicare senza password" → `npmAuthenticate`/`NuGetAuthenticate`; "mostrare solo pacchetti validati" → view `@Release` + promozione; "non dipendere da npmjs se il pacchetto sparisce" → upstream con salvataggio nel feed; "versione già pubblicata" → 409, nuova versione.
 
 ## 12. GitHub Actions (matrix, secret, environment, OIDC)
 
