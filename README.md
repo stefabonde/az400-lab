@@ -23,7 +23,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 8. Variable group, secure variable, template
 - [x] 9. Service connection (workload identity federation)
 - [x] 10. Agent self-hosted
-- [ ] 11. Azure Artifacts
+- [x] 11. Azure Artifacts
 - [ ] 12. GitHub Actions (matrix, secret, environment, OIDC)
 - [ ] 13. Deployment strategies
 - [ ] 14. Container (Dockerfile + GHCR)
