@@ -47,6 +47,31 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 21 | KQL | tabella per errori di pagina e utenti | ok `!` | banco: `requests` (success == false); `exceptions` per stack trace | es. 19 |
 | 22 | SCA | licenze open source | ok | **Black Duck** (SCA), non Maven/CMake/Bamboo | |
 | 23 | GHES | auth con Azure DevOps Server | ok | **PAT** per Enterprise Server; GitHub App per github.com | es. 12 |
+| 24 | Git | ordine del flusso trunk-based | ok | feature branch → commit/push → PR → merge | es. 1 |
+| 25 | App Insights | ping test da più regioni con alert | `X` | **availability test** esegue il ping; la metrica è il risultato; Service Health = piattaforma; URL ping classici in dismissione | es. 19 |
+| 26 | Release | verificare work item aperti prima del deploy | ok | **pre-deployment gate** (automatico); approval = persona | es. 13 |
+| 27 | DSC | completare configurazione (Node, WindowsFeatureSet) | ok | `WindowsFeatureSet` per più feature, `Ensure = Present`, `Node` = macchina | es. 15 |
+| 28 | App Service | blue-green con slot | ok | slot staging → deploy → **swap**; rollback = nuovo swap | es. 24 |
+| 29 | DSC | `-ConfigurationMode` | ok | ApplyOnly = una volta; ApplyAndMonitor = segnala; **ApplyAndAutoCorrect** = ripara | es. 15 |
+| 30 | Boards | Lead / Cycle / Burnup / Burndown / Velocity | `X` (5 varianti) | Lead = dalla creazione; Cycle = dall'attivazione; Velocity = pianificato vs completato per sprint; Burndown = lavoro rimasto | es. 28 |
+| 31 | Alert | aumentare il log quando l'uso è anomalo | `X` | **dynamic threshold** + **runbook** (action group); l'email notifica soltanto | es. 19 |
+| 32 | Service connection | deploy su sottoscrizione esterna | `X` | service connection **manuale**; service hook = notifica, non credenziali | es. 9 |
+| 33 | Sicurezza | scansione dinamica | `X` | **OWASP ZAP** (DAST); SonarQube = statica; Mend/Black Duck = SCA | es. 17 |
+| 34 | KQL | `summarize make_set(...) by` | `X` | `summarize` = operatore; `count/dcount/make_set` = funzioni dentro | es. 19 |
+| 35 | Log | dove vedere/archiviare i log di test | `X` `!` | build + test → **Pipelines**; solo test automatici → **Test Plans** (banco); Storage = archivio | es. 22 |
+| 36 | DSC | nodi gestiti: Register vs ConfigurationMode | `X` `!` | Register = onboarding; ConfigurationMode = come applica; RefreshMode = push/pull | es. 15 |
+| 37 | Jenkins | commit su Azure Repos avvia build Jenkins | ok `!` | **service hook** in Azure DevOps = Yes; trigger solo in Jenkins = No (ambigua) | es. 28 |
+| 38 | Alert → Teams | notifica in Teams da Azure Monitor | ok (2 volte) | action group → Logic App con trigger **HTTP request** → Teams | es. 19 |
+| 39 | Feed | unlist/deprecate = ruolo minimo | ok (2 volte) | **Contributor** (Collaborator no; Owner eccede) | es. 11 |
+| 40 | Merge | storia compatta / singolo commit | ok (3 volte) | **squash merge**; rebase riscrive la storia | es. 1 |
+| 41 | VM | scalare / datacenter / rack | ok | VMSS = autoscaling; **Availability Zones** = guasto datacenter; Availability Sets = rack | |
+| 42 | Release | approvatori esterni all'organizzazione | ok | **Logic App + Teams**; approval nativa e manual intervention richiedono utenti dell'org | es. 13 |
+| 43 | Self-hosted | Bitbucket on-prem dietro firewall | ok | **self-hosted agent** + **External Git service connection** | es. 10 |
+| 44 | ARM | modalità | ok (2 volte) | **Incremental** = lascia; **Complete** = elimina il resto | es. 15 |
+| 45 | SonarQube | cosa si crea a livello progetto | ok | **service connection** (progetto); estensione = organizzazione | es. 22 |
+| 46 | Container | test inline | ok | **multi-stage Dockerfile** | es. 14 |
+| 47 | Teams | `@azure pipelines subscribe <URL _build?definitionId=…>` | ok | signin → subscribe; subscriptions = elenco | es. 28 |
+| 48 | Policy | `supportsHttpsTrafficOnly` + deny | ok | impone HTTPS in transito sui **nuovi** account; non retroattivo | |
 
 ## Da portare in laboratorio
 
@@ -56,6 +81,9 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 - [ ] es. 27: generare un SAS con scadenza breve, usarlo, farlo scadere
 - [ ] es. 28: widget Lead Time e Cycle Time
 - [ ] es. 18: gruppi di sicurezza e permessi su wiki
+- [ ] es. 15: flusso DSC in Automation: `.ps1` → Import → Compile → registrare nodi
+- [ ] es. 22: dove compaiono i risultati dei test (tab Tests vs Test Plans)
+- [ ] es. 13: gate/approval sull'environment; manual validation
 
 ## Nomi cambiati (vecchio → attuale)
 
@@ -82,4 +110,4 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 
 | Data | Test SkillCertPro | Punteggio | Note |
 |---|---|---|---|
-| 2026-10-15 | (primo giro) | | domande 1-23 sopra |
+| 2026-10-15 | (primo giro) | ~85% su ~88 domande distinte | 13 sbagliate, ~10 ambigue/datate; voci 1-48 sopra |
