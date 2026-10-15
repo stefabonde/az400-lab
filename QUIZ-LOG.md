@@ -29,6 +29,6 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 
 ## Domande sospette (da verificare su documentazione Microsoft)
 
-| Domanda in breve | Risposta del banco | Mia dubbio | Esito verifica |
+| Domanda in breve | Risposta del banco | Dubbio | Esito verifica |
 |---|---|---|---|
-| | | | |
+| Tool di analisi statica Java con Azure DevOps (Bamboo/Jenkins/FindBugs/PMD) | PMD | anche FindBugs è corretta; doc di riferimento TFS 2017 (obsoleta) | Maven@3 supporta Checkstyle, PMD, FindBugs (SpotBugs nelle versioni recenti). Oggi: SonarQube/SonarCloud, CodeQL. Domanda datata, ricordare il concetto |
