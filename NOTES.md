@@ -109,6 +109,88 @@ Azure DevOps (`dev.azure.com`) e portale Azure (`portal.azure.com`) sono **prodo
 | accesso ad Azure senza segreto | OIDC con `azure/login` | service connection con federation |
 | collegare lavoro e PR | `Closes #12`, pannello Development | work item collegato (policy *Check for linked work items*) |
 
+## Confronti rapidi (dai quiz)
+
+### Tempo e metriche
+
+| Concetto | Parte da | Finisce a |
+|---|---|---|
+| **Lead Time** | creazione del work item | completamento (≥ Cycle Time) |
+| **Cycle Time** | inizio lavoro (stato attivo) | completamento |
+
+- Velocità: Lead/Cycle Time, Deployment Frequency · Qualità: **MTTR**, MTTD, Change Failure Rate · Efficienza: Server to Admin Ratio.
+
+### Processi di Azure Boards
+
+| Processo | Work item di richiesta |
+|---|---|
+| Basic | Epic, Issue, Task |
+| Agile | Epic, Feature, **User Story**, Task, Bug |
+| Scrum | Epic, Feature, **PBI**, Task, Bug |
+| CMMI | Epic, Feature, **Requirement**, Task, Bug, Change Request, Risk, Review |
+
+### Rilascio progressivo
+
+| Tecnica | Come | Progressivo? |
+|---|---|---|
+| Deployment rings | anelli di utenti sempre più larghi | sì |
+| Feature flags | funzione attivata per segmenti | sì |
+| Canary | piccola % di traffico | sì |
+| Blue/Green | due ambienti, switch completo | no (zero downtime) |
+
+### Configurare o creare una VM
+
+| Il testo dice… | Scegli |
+|---|---|
+| deployare / creare / provisioning | **ARM / Bicep** |
+| configurare, configurazione uniforme | **DSC** (+ Custom Script Extension) |
+| anti-drift nel tempo | DSC / Azure Machine Configuration |
+| installare software / lanciare uno script | Custom Script Extension |
+
+### Token e autenticazione
+
+| Cosa | Per |
+|---|---|
+| **PAT** | Azure DevOps (registrare agent, API, Git, GHES → ADO Server) |
+| **SAS** | accesso delegato, limitato e a scadenza a Azure Storage (sempre HTTPS) |
+| GitHub App / OAuth | github.com → Azure Pipelines |
+| Workload identity federation | pipeline → Azure senza segreti |
+
+### Application Insights e KQL
+
+| Tabella | Contiene |
+|---|---|
+| `requests` | richieste HTTP in ingresso, `success`, `resultCode` |
+| `exceptions` | eccezioni e stack trace |
+| `dependencies` | chiamate in uscita (DB, API) |
+| Smart Detection | alert automatico su anomalie di failure/performance |
+| Profiler | dove il codice è lento |
+
+`dcount(user_Id)` = utenti distinti colpiti.
+
+### Branch: policy, security, lock
+
+| | Cosa governa |
+|---|---|
+| **Policies** | il *processo* (PR, revisori, build) |
+| Security | *chi* può fare cosa (anche Bypass policies) |
+| Lock | branch di sola lettura |
+
+### Probe dei container
+
+| Probe | Se fallisce |
+|---|---|
+| **Liveness** | il container viene **riavviato** |
+| **Readiness** | non riceve traffico, **non** viene riavviato |
+
+### Strumenti di analisi
+
+| Obiettivo | Strumento |
+|---|---|
+| Qualità del codice proprio | SonarQube / SonarCloud, CodeQL, PMD/Checkstyle/SpotBugs |
+| Licenze e vulnerabilità delle dipendenze (SCA) | Black Duck, Mend, Dependabot, OWASP Dependency-Check |
+| Scansione solo produzione (npm) | `npm install --omit=dev` (storico `--production`) |
+
 ## 1. Branch policy Azure DevOps su `main`
 
 - **Dove**: Repos → Branches → `⋯` su `main` → Branch policies.
