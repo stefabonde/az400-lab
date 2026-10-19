@@ -24,7 +24,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 9. Service connection (workload identity federation)
 - [x] 10. Agent self-hosted
 - [x] 11. Azure Artifacts
-- [ ] 12. GitHub Actions (matrix, secret, environment, OIDC)
+- [ ] 12. (A fatta: matrix; manca B: secret, environment, OIDC) GitHub Actions (matrix, secret, environment, OIDC)
 - [ ] 13. Deployment strategies
 - [ ] 14. Container (Dockerfile + GHCR)
 - [ ] 15. IaC con Bicep
