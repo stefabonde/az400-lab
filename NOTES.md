@@ -191,6 +191,36 @@ Azure DevOps (`dev.azure.com`) e portale Azure (`portal.azure.com`) sono **prodo
 | Licenze e vulnerabilità delle dipendenze (SCA) | Black Duck, Mend, Dependabot, OWASP Dependency-Check |
 | Scansione solo produzione (npm) | `npm install --omit=dev` (storico `--production`) |
 
+## Guida ufficiale ↔ esercizi (versione 27 luglio 2026)
+
+Fonte: study guide AZ-400 su Microsoft Learn (letta il 2026-10-19, aggiornata 2026-06-26). Pesi per dominio; **non esistono percentuali per argomento**. Soglia di superamento: 700. L'esame del 10 dicembre usa questa versione.
+
+| Dominio | Peso |
+|---|---|
+| Build e release pipeline | **50-55%** |
+| Processi e comunicazione | 10-15% |
+| Source control | 10-15% |
+| Sicurezza e compliance | 10-15% |
+| Instrumentation | 5-10% |
+
+| Argomento in guida | Dove lo copro | Stato |
+|---|---|---|
+| GitHub Actions, runner, integrazione GitHub ↔ Azure Pipelines | es. 12 | **da fare, priorita' massima** |
+| OIDC / workload identity federation in Actions e Pipelines | es. 9 (fatto), es. 12B | parziale |
+| GitHub Advanced Security (anche per Azure DevOps), Defender for Cloud DevOps Security, CodeQL in container, Dependabot | es. 20 | **scoperto** |
+| Feature flags con Azure App Configuration Feature Manager | da aggiungere (es. 17 o 24) | **scoperto** |
+| Azure Deployment Environments | solo teoria | scoperto |
+| Bicep, Azure Machine Configuration | es. 15 | parziale |
+| YAML templates, variable groups, task groups, secure files | es. 8 (fatto), 21-25 | da verificare |
+| Migrare una pipeline da classic a YAML | solo teoria | scoperto |
+| Retention artefatti, flaky test, concorrenza e costi | es. 11 (fatto), 22, 32 | ok |
+| Dashboard e metriche (cycle time, lead time, time to recovery) | es. 28 | da fare |
+| Wiki, Mermaid, release notes, webhook, GitHub Issues/Projects, GitHub Flow | es. 12, 18 | scoperto |
+| Git: recuperare/rimuovere dati, tag, Scalar, git-fat | es. 5 (fatto) + teoria | parziale |
+| KQL, App Insights, VM insights, distributed tracing | es. 19 | da fare |
+
+Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, release classic, App Center); la guida di luglio 2026 da' molto peso anche a GitHub. Prima di ogni simulazione ricontrollare la pagina "Skills measured".
+
 ## 1. Branch policy Azure DevOps su `main`
 
 - **Dove**: Repos → Branches → `⋯` su `main` → Branch policies.
