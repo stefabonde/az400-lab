@@ -350,11 +350,12 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 - **Procedura A (matrix)**: branch `ci-actions` -> `.github/workflows/ci.yml` con `on: push (main) + pull_request`, job `test` con `strategy.matrix.node: [20, 22, 24]`, step `actions/checkout@v4`, `actions/setup-node@v4` (`node-version: ${{ matrix.node }}`), `npm test` -> PR -> 3 job in parallelo nel tab Actions -> rompere un test e guardare i job diventare rossi (nota `fail-fast`).
 - **Parte B (da fare)**: secret di repository, environment con approvazione, OIDC verso Azure (`azure/login` con `id-token: write`).
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove (A)**: repo GitHub `az400-lab`, `.github/workflows/ci.yml`; tab Actions / sezione checks della PR.
+- **Cosa fa (A)**: `strategy.matrix.node: [20, 22, 24]` crea **3 job paralleli** dalla stessa definizione (`CI / test (20)`, `(22)`, `(24)`); l'evento compare nel nome del check (`pull_request`).
+- **Errore visto (A)**: con un bug nel codice, **fail-fast** (default `true`) fa fallire 1 job e **cancella gli altri**; con `fail-fast: false` falliscono **tutti e tre** e vedi se il problema dipende dalla versione.
+- **Trabocchetti (A)**: il check rosso **non blocca il merge** se il ruleset di `main` non richiede "status checks"; `on: push` solo su `main` + `pull_request` evita doppie esecuzioni sul branch; `actions/checkout@v4` e `setup-node@v4` vanno nel job, altrimenti non c'e' codice ne' Node.
+- **Ordine dei passi (A)**: branch -> `ci.yml` -> push -> PR -> verde 3 job -> rompi -> osserva -> ripristina -> merge.
+- **Domanda tipo (A)**: "una matrix deve continuare anche se un job fallisce" -> `fail-fast: false`; "bloccare il merge se la CI fallisce" -> branch protection / ruleset con required status checks.
 
 ## 13. Deployment strategies
 
