@@ -348,6 +348,8 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 12. GitHub Actions (matrix, secret, environment, OIDC)
 
+- **Procedura A (matrix)**: branch `ci-actions` -> `.github/workflows/ci.yml` con `on: push (main) + pull_request`, job `test` con `strategy.matrix.node: [20, 22, 24]`, step `actions/checkout@v4`, `actions/setup-node@v4` (`node-version: ${{ matrix.node }}`), `npm test` -> PR -> 3 job in parallelo nel tab Actions -> rompere un test e guardare i job diventare rossi (nota `fail-fast`).
+- **Parte B (da fare)**: secret di repository, environment con approvazione, OIDC verso Azure (`azure/login` con `id-token: write`).
 - **Dove**: 
 - **Cosa fa**: 
 - **Errore visto**: 

@@ -50,3 +50,7 @@ Priorità alta (area pipeline, 50-55%): 21-25.
 - [ ] 30. Tag, recupero dati (`reflog`, `revert`, `cherry-pick`), rimozione dati dalla storia
 
 Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / Azure Machine Configuration, Defender for Cloud DevOps Security.
+
+## Prossimo passo
+
+Es. 12 parte A (GitHub Actions con matrix Node 20/22/24, branch `ci-actions`): procedura nella scheda 12 di `NOTES.md`. Poi parte B (secret, environment con approvazione, OIDC). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
