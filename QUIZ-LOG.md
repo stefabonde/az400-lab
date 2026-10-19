@@ -72,6 +72,16 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 46 | Container | test inline | ok | **multi-stage Dockerfile** | es. 14 |
 | 47 | Teams | `@azure pipelines subscribe <URL _build?definitionId=…>` | ok | signin → subscribe; subscriptions = elenco | es. 28 |
 | 48 | Policy | `supportsHttpsTrafficOnly` + deny | ok | impone HTTPS in transito sui **nuovi** account; non retroattivo | |
+| 49 | AKS CLI | `az group create` vs `az aks create` (hotspot) | X | guarda i **parametri**: `--node-count`/`--generate-ssh-keys` = `az aks create`; `--location` senza RG = `az group create` | es. 14 |
+| 50 | PowerShell ARM | cmdlet per deployare un template | X | scelto `Set-`; un deployment non si modifica: **`New-AzResourceGroupDeployment`** (`-TemplateFile` locale, `-TemplateUri` URL) | es. 15 |
+| 51 | Activity Log alert | quale azione scatta (Administrative + **failed**) | X | leggi **Category, Signal name, Status**; ignorato lo Status. Opzione "scale up fallito" ambigua | es. 19 |
+| 52 | Boards | widget "completare il lavoro allocato agli sprint" | X `!` | chiave banco **Velocity** (pianificato vs completato); Burndown = lavoro rimanente | es. 28 |
+| 53 | Logic App | trigger chiamato da action group/availability test | `!` | io: **Request**; banco: HTTP Webhook (spiegazione confusa). Ragiona sul requisito | es. 19 |
+| 54 | Auth Git | PAT vs Entra ID con Git Credential Manager | `!` | chiave probabile **PAT**; ambigua | es. 18 |
+| 55 | Deployment groups | "preparare le VM" | `!` | estensione **Azure Pipelines Agent**; "indirizzare il rilascio" = deployment group | es. 13 |
+| 56 | VMSS | idoneita' upgrade per istanza | `!` | **Application Health Extension**; ambigua con la probe del LB | es. 24 |
+| 57 | Load Balancer | probe HTTPS, costo minimo | ok | **Standard** (Basic: solo TCP/HTTP, ritirato 09/2025) | es. 24 |
+| 58 | Defender / agent | vuln assessment e agent processi VM | ok | datate: Defender for Cloud, **Azure Monitor Agent** al posto del Log Analytics agent | |
 
 ## Da portare in laboratorio
 
@@ -91,6 +101,10 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 |---|---|---|
 | PowerShell DSC / Automation State Configuration | **Azure Machine Configuration** | Automation State Configuration in dismissione |
 | Azure Active Directory | **Microsoft Entra ID** | 2023 |
+| Azure AD Identity Protection | **Microsoft Entra ID Protection** | |
+| Azure Pipelines URL ping test (availability) | **Standard test** | |
+| Basic Load Balancer | ritirato 30/09/2025 | usare Standard |
+| Key Vault access policy | **Azure RBAC** (Key Vault Secrets User) | |
 | VSTS | **Azure DevOps Services** | |
 | TFS | **Azure DevOps Server** | on-premises |
 | WhiteSource / Bolt | **Mend** | |
@@ -111,3 +125,4 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | Data | Test SkillCertPro | Punteggio | Note |
 |---|---|---|---|
 | 2026-10-15 | (primo giro) | ~85% su ~88 domande distinte | 13 sbagliate, ~10 ambigue/datate; voci 1-48 sopra |
+| 2026-10-19 | (secondo blocco) | 50 domande nuove (schede 101-150) | 4 sbagliate (49-52), 5 ambigue (53-56); voci 49-58 |
