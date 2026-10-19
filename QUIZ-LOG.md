@@ -82,6 +82,7 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 56 | VMSS | idoneita' upgrade per istanza | `!` | **Application Health Extension**; ambigua con la probe del LB | es. 24 |
 | 57 | Load Balancer | probe HTTPS, costo minimo | ok | **Standard** (Basic: solo TCP/HTTP, ritirato 09/2025) | es. 24 |
 | 58 | Defender / agent | vuln assessment e agent processi VM | ok | datate: Defender for Cloud, **Azure Monitor Agent** al posto del Log Analytics agent | |
+| 59 | GitHub Actions | `on: push` (tutti i branch) + `pull_request` su un push con PR aperta | X | partono **entrambi** i run (doppione); filtrare `push` su `main` | es. 12 |
 
 ## Da portare in laboratorio
 
@@ -126,3 +127,4 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 |---|---|---|---|
 | 2026-10-15 | (primo giro) | ~85% su ~88 domande distinte | 13 sbagliate, ~10 ambigue/datate; voci 1-48 sopra |
 | 2026-10-19 | (secondo blocco) | 50 domande nuove (schede 101-150) | 4 sbagliate (49-52), 5 ambigue (53-56); voci 49-58 |
+| 2026-10-19 | mini-quiz es. 12A | 4/5 | errata la 3 (doppio trigger push + pull_request) |
