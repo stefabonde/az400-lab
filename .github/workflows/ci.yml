@@ -22,3 +22,4 @@ jobs:
     environment: production
     steps:
       - run: echo "Deploy simulato su production"    
+      
