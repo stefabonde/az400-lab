@@ -16,11 +16,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm test
-      - name: Usa il secret
-        env:
-          MY_SECRET: ${{ secrets.DEMO_SECRET }}
-        run: |
-          echo "Il secret e' $MY_SECRET"
-          echo "Primi 3 caratteri: ${MY_SECRET:0:3}"
-          echo "Spezzato: ${MY_SECRET:0:5} ${MY_SECRET:5}"
-          echo "Al contrario: $(echo $MY_SECRET | rev)"
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: echo "Deploy simulato su production"    
