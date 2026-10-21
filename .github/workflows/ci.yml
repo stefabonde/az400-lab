@@ -19,4 +19,8 @@ jobs:
       - name: Usa il secret
         env:
           MY_SECRET: ${{ secrets.DEMO_SECRET }}
-        run: echo "Il secret e' $MY_SECRET"
+        run: |
+          echo "Il secret e' $MY_SECRET"
+          echo "Primi 3 caratteri: ${MY_SECRET:0:3}"
+          echo "Spezzato: ${MY_SECRET:0:5} ${MY_SECRET:5}"
+          echo "Al contrario: $(echo $MY_SECRET | rev)"
