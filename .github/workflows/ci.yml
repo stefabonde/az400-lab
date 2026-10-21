@@ -16,3 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm test
+      - name: Usa il secret
+        env:
+          MY_SECRET: ${{ secrets.DEMO_SECRET }}
+        run: echo "Il secret e' $MY_SECRET"
