@@ -24,7 +24,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 9. Service connection (workload identity federation)
 - [x] 10. Agent self-hosted
 - [x] 11. Azure Artifacts
-- [ ] 12. (A fatta: matrix; manca B: secret, environment, OIDC) GitHub Actions (matrix, secret, environment, OIDC)
+- [x] 12. GitHub Actions (matrix, secret, environment, OIDC)
 - [ ] 13. Deployment strategies
 - [ ] 14. Container (Dockerfile + GHCR)
 - [ ] 15. IaC con Bicep
@@ -53,4 +53,4 @@ Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / A
 
 ## Prossimo passo
 
-Es. 12 parte A (GitHub Actions con matrix Node 20/22/24, branch `ci-actions`): procedura nella scheda 12 di `NOTES.md`. Poi parte B (secret, environment con approvazione, OIDC). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 13 (deployment strategies). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
