@@ -25,7 +25,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 10. Agent self-hosted
 - [x] 11. Azure Artifacts
 - [x] 12. GitHub Actions (matrix, secret, environment, OIDC)
-- [ ] 13. Deployment strategies
+- [x] 13. Deployment strategies
 - [ ] 14. Container (Dockerfile + GHCR)
 - [ ] 15. IaC con Bicep
 - [ ] 16. Key Vault nella pipeline
@@ -53,4 +53,4 @@ Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / A
 
 ## Prossimo passo
 
-Es. 13 (deployment strategies). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 14 (container). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").

@@ -364,11 +364,11 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 13. Deployment strategies
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Azure DevOps, `deploy-strategy.yml` su branch `es13`, environment `strategy-lab` (Approvals + Business Hours). Job `deployment:` con `strategy:`.
+- **Cosa fa**: `runOnce` esegue gli hook in ordine: `preDeploy` -> `deploy` -> `routeTraffic` -> `postRouteTraffic` -> `on: success` (o `on: failure` per rollback). Ogni hook e' un job separato nel run (`deploy_PreDeploy`, ...).
+- **Errore visto**: (1) `Mapping values are not allowed in this context`: `: ` dentro `script: echo "a: b"` non quotato; (2) `exit 1` in `deploy` -> `OnFailure` gira ma lo stage resta rosso, RouteTraffic/PostRouteTraffic/OnSuccess saltati; (3) `Deployment strategy: 'Canary' is not supported for Environment scoped target`.
+- **Trabocchetti**: `rolling` solo su risorse **VM**, `canary` solo su **Kubernetes** (`environment: nome.risorsa`); `runOnce` va ovunque. `on: failure` non ripara il run, serve a rollback/pulizia. `preDeploy` gira sempre per primo.
+- **Domanda tipo**: "rilascio graduale 10% poi 50% su AKS" -> canary; "hook che gira solo se deploy fallisce" -> `on: failure`; ordinamento degli hook.
 
 ## 14. Container (Dockerfile + GHCR)
 
