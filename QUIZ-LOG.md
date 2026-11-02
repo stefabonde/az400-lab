@@ -131,3 +131,4 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-19 | (secondo blocco) | 50 domande nuove (schede 101-150) | 4 sbagliate (49-52), 5 ambigue (53-56); voci 49-58 |
 | 2026-10-19 | mini-quiz es. 12A | 4/5 | errata la 3 (doppio trigger push + pull_request) |
 | 2026-10-21 | mini-quiz es. 12B | 3/5 (6 non risposta) | errate 2 (nome environment) e 4 (ordine OIDC) |
+| 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
