@@ -85,6 +85,27 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 59 | GitHub Actions | `on: push` (tutti i branch) + `pull_request` su un push con PR aperta | X | partono **entrambi** i run (doppione); filtrare `push` su `main` | es. 12 |
 | 60 | GitHub environments | `environment:` con nome sbagliato (refuso) | X | GitHub **crea** un environment nuovo **senza protezioni**: il job parte senza approvazione | es. 12 |
 | 61 | OIDC | ordine dei passi (app, credential, ruolo, secret, workflow) | X | **2-4-3-5-1**: il workflow va per ultimo, consuma tutto; ruolo e credential scambiabili | es. 12 |
+| 62 | Build Java | dipendenze on-prem con agent Hosted VS 2017 + Java Tool Installer | ? | **No**: serve **self-hosted agent** in rete; il tool installer sceglie solo il JDK. Serie "stessa domanda": hosted = sempre No | es. 10 |
+| 63 | Key Vault | service connection per leggere i secret senza credenziali salvate | ? `!` | tipo **Azure Resource Manager**; auth **managed identity** (banco) / **workload identity federation** (oggi). Testo tagliato (2º menu) | es. 12 |
+| 64 | Key Vault | impedire l'eliminazione del vault (least privilege) | ? `!` | **RBAC** = management plane (elimina la risorsa); access policy = data plane (secret). Testo tagliato | es. 16 |
+| 65 | Logic Apps | riepilogo giornaliero delle eccezioni su Teams | ? | **Logic Apps** (ricorrenza + query KQL + connettore Teams) + **Application Insights**; App Center = distrattore (ritirato) | es. 19 |
+| 66 | Release | approvazione oltre 2 ore fa fallire il deploy, policy 8 ore | ? | **Pre-deployment conditions → approvals → Timeout** = Yes. Timeout approvals ≠ timeout gates ≠ deployment queue | es. 13 |
+| 67 | Log Analytics | metriche app + DB, query ad-hoc, alert, archivio centrale | ? | **Log Analytics** (workspace + diagnostic settings); App Insights = solo APM; Event Hubs = streaming | es. 19 |
+| 68 | Deploy on-prem | Docker build sul server + Download Build Artifacts | ? | **No**: manca il **self-hosted agent** sul target. Copy and Publish Build Artifacts (deprecato) = No | es. 10 |
+| 69 | Access level | Pilot users con Test & Feedback (least privilege) | ? | **Stakeholder** (risponde al feedback); **Basic** per chi lo richiede. Testo tagliato (riga Developers) | es. 20 |
+| 70 | Auth CI esterno | come ADO autentica verso un CI di terze parti | `!` | banco: **PAT**; verso ambiguo (di solito è il tool a usare il PAT su ADO). Revocare i PAT | es. 18 |
+| 71 | Analisi statica | in quale fase / dopo una pull request | ok | **build** (shift left); dopo PR = **static code analysis**; CD = pen test/DAST | es. 22 |
+| 72 | Release | più build in attesa, distribuire solo l'ultima | ? | **Deployment queue settings** ("latest and cancel the others"); YAML: `lockBehavior: runLatest` | es. 13 |
+| 73 | Azure Artifacts | feed centrale per pacchetto custom in Visual Studio | ? | ordine: **create feed → publish → aggiungi URL in NuGet Package Manager (Package Sources)**; Git non è un feed | es. 11 |
+| 74 | Build | build incrementali senza ripulire l'ambiente | ? | **self-hosted agent** (+ `clean: false`); hosted = macchina nuova a ogni job | es. 10 |
+| 75 | Azure Artifacts | un solo feed per pacchetti interni e remoti (anche autenticati) | ? | **upstream sources**; views = livelli di qualità | es. 11 |
+| 76 | ServiceNow | change request prima del deploy in produzione | ? `!` | banco: **post-deployment gate dopo QA + pre-deployment gate prima di Prod**; "deployment control" SOAP/REST = distrattore | es. 13 |
+| 77 | Version control | file/cartelle con permessi → ? / YAML / branch visibile ai lead | `!` | ProjectA **TFVC** (path-based); Project1 YAML → **Azure Repos Git** (ambigua, anche GitHub Ent./Bitbucket); Project2 on-prem → GitHub Enterprise; Project3 centralizzato → Subversion | es. 1 |
+| 78 | Agent | pool hosted per app iOS | ok | **macOS** (`macos-latest`); Ubuntu/Windows non compilano iOS | es. 10 |
+| 79 | Git permessi | merge su master anche con build fallita (least privilege) | ? | **security del branch** → *Bypass policies when completing pull requests*; repo = troppo ampio | es. 1 |
+| 80 | ARM + Key Vault | impedire a chi deploya di vedere le connection string | ok (2 volte) | **Key Vault** (reference nel parameter file); parameter file/Web.config = in chiaro | es. 16 |
+| 81 | ARM | slot `templateLink` in un deployment linked | `!` | risposta confermata da Stefano: **`templateLink`** (`uri`); `templateURI`/`keyVaultlink` non esistono. Snippet non incollato | es. 15 |
+| 82 | Git | `git gc` per minimizzare il repo (hotspot) | ? | Dropdown 1 **`--aggressive`**; con `git reflog expire --expire=now --all` e `--prune=now`. Hotspot: Dropdown 2 non visto | es. 1 |
 
 ## Da portare in laboratorio
 
@@ -97,6 +118,10 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 - [ ] es. 15: flusso DSC in Automation: `.ps1` → Import → Compile → registrare nodi
 - [ ] es. 22: dove compaiono i risultati dei test (tab Tests vs Test Plans)
 - [ ] es. 13: gate/approval sull'environment; manual validation
+- [ ] es. 13: timeout delle approvals e `lockBehavior: runLatest` su environment
+- [ ] es. 11: feed Azure Artifacts + upstream sources + pubblicare un pacchetto e usarlo come package source
+- [ ] es. 10: self-hosted agent con `clean: false` (build incrementale) e agent su rete on-prem
+- [ ] es. 16: ruolo RBAC senza `delete` sul Key Vault vs access policy
 
 ## Nomi cambiati (vecchio → attuale)
 
@@ -122,6 +147,9 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | Azure DevOps load testing | **Azure Load Testing** | |
 | Visual Studio App Center | ritirato (2025) | |
 | GitHub Advanced Security | **Secret Protection** + **Code Security** | separati dal 2025 |
+| Cmdlet `AzureRm` (`Register-AzureRmAutomationDscNode`) | modulo **`Az`** (`Register-AzAutomationDscNode`) | AzureRm obsoleto |
+| Hosted VS 2017 (`vs2017-win2016`) | `windows-latest` / `ubuntu-latest` | immagine ritirata |
+| Copy and Publish Build Artifacts | `Publish Build Artifacts` / `Publish Pipeline Artifacts` | task deprecato |
 
 ## Test svolti
 
@@ -132,3 +160,4 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-19 | mini-quiz es. 12A | 4/5 | errata la 3 (doppio trigger push + pull_request) |
 | 2026-10-21 | mini-quiz es. 12B | 3/5 (6 non risposta) | errate 2 (nome environment) e 4 (ordine OIDC) |
 | 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
+| 2026-11-02 | sessione di test (domande incollate in chat) | esiti non ancora registrati | voci 62-82; esito `?` = da confermare con Stefano. Ricorrenti (non riscritte): DSC ConfigurationMode (29, 36), Lead/Cycle Time (9, 30), flaky (8), availability test (25), deployment groups (55), PMD/CheckStyle (2), analisi statica (33) |
