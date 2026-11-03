@@ -22,7 +22,7 @@ test('GET / risponde con il saluto', async () => {
 test('GET /health risponde ok', async () => {
   const res = await fetch(`${base}/health`);
   assert.strictEqual(res.status, 200);
-  assert.deepStrictEqual(await res.json(), { status: 'okno' });
+  assert.deepStrictEqual(await res.json(), { status: 'ok' });
 });
 
 test('percorso sconosciuto risponde 404', async () => {
