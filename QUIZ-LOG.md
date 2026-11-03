@@ -106,6 +106,7 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 80 | ARM + Key Vault | impedire a chi deploya di vedere le connection string | ok (2 volte) | **Key Vault** (reference nel parameter file); parameter file/Web.config = in chiaro | es. 16 |
 | 81 | ARM | slot `templateLink` in un deployment linked | `!` | risposta confermata da Stefano: **`templateLink`** (`uri`); `templateURI`/`keyVaultlink` non esistono. Snippet non incollato | es. 15 |
 | 82 | Git | `git gc` per minimizzare il repo (hotspot) | ? | Dropdown 1 **`--aggressive`**; con `git reflog expire --expire=now --all` e `--prune=now`. Hotspot: Dropdown 2 non visto | es. 1 |
+| 83 | ACI | `restartCount` sale con evento "platform initiated", `exitCode: 0`: cosa controlli | X | **liveness probe** (percorso/porta); la readiness non riavvia mai, toglie solo dal traffico. Visto nel lab: 67 → 80 con liveness, fermo con readiness | es. 14 |
 
 ## Da portare in laboratorio
 
@@ -160,4 +161,5 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-19 | mini-quiz es. 12A | 4/5 | errata la 3 (doppio trigger push + pull_request) |
 | 2026-10-21 | mini-quiz es. 12B | 3/5 (6 non risposta) | errate 2 (nome environment) e 4 (ordine OIDC) |
 | 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
+| 2026-11-03 | mini-quiz es. 14 | 4/5 | errata la 4 (liveness vs readiness: scelta la readiness) |
 | 2026-11-02 | sessione di test (domande incollate in chat) | esiti non ancora registrati | voci 62-82; esito `?` = da confermare con Stefano. Ricorrenti (non riscritte): DSC ConfigurationMode (29, 36), Lead/Cycle Time (9, 30), flaky (8), availability test (25), deployment groups (55), PMD/CheckStyle (2), analisi statica (33) |
