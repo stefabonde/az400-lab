@@ -372,11 +372,30 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 14. Container (Dockerfile + GHCR)
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: GitHub, repo `az400-lab`, branch `es14`: `Dockerfile` (multi-stage), `.dockerignore`, `.github/workflows/docker.yml`; immagine su **GHCR** (`ghcr.io/stefabonde/az400-lab`, profilo → Packages). Azure: Container Instances (ACI) in `az400-lab-rg`, Cloud Shell per il file `aci.yaml`.
+- **Cosa fa**:
+  - **Multi-stage**: lo stage `test` esegue `npm test`; lo stage finale fa `COPY --from=test`, quindi **dipende** dai test: se falliscono non nasce nessuna immagine.
+  - **Workflow**: `docker/login-action` su `ghcr.io` con `GITHUB_TOKEN` (nessun secret da creare) + `docker/build-push-action`; `permissions: packages: write`; tag `sha` (immutabile) + `latest` (mobile).
+  - **Package GHCR**: visibilità **separata** da quella del repo; collegato al repo (*Manage Actions access*).
+  - **ACI**: container group con IP pubblico, pull **senza credenziali** perché il package è pubblico. **Liveness probe** fallita → ACI **riavvia** il container (`restartCount` sale); **readiness probe** fallita → **nessun riavvio** (toglie dal traffico).
+- **Errore visto**:
+  1. `.github/.github/workflows/docker.yml` (cartella doppia): il workflow **non compare** in Actions, nessun errore.
+  2. `failed to read dockerfile: open Dockerfile: no such file or directory` (Dockerfile su un altro branch).
+  3. `denied: installation not allowed to Write organization package` con `packages: read` (login e build ok, fallisce il **push**).
+  4. Test rotto → `RUN npm test ... exit code: 1` nello stage `test`: **nessun push** (il log non arriva a `pushing`).
+  5. ACI: `RequestDisallowedByAzure: The selected region is currently not accepting new customers` (West Europe, anche per il `DefaultWorkspace-...-WEU`): si cambia regione (`northeurope`).
+  6. Liveness su `/nonesiste`: eventi `Killing ... (platform initiated)`, `exitCode: 0`, `restartCount` 67 → 80, stato `Waiting` tra un riavvio e l'altro; `/health` risponde `200` quasi sempre. Dopo il cambio in `readinessProbe`: `liveness: null`, `readiness: /nonesiste`, stato `Running`, contatore fermo.
+- **Trabocchetti**:
+  - `push` e `pull_request` leggono il workflow **dal branch** del commit: non serve il merge in `main`. Solo `workflow_dispatch` e `schedule` richiedono il file nel **branch predefinito**.
+  - `permissions` nel job **sostituisce** i default: elenca tutto ciò che serve (`contents: read` + `packages: write`).
+  - Senza `COPY --from=test` BuildKit **salta** lo stage di test.
+  - Il nome dell'immagine GHCR deve essere **minuscolo**.
+  - Riavvio da liveness ≠ crash: `exitCode: 0`, evento "platform initiated".
+  - Si ricrea con `az container create --file` sullo stesso nome: aggiorna sul posto (stesso IP, probe sostituita); `az container show` è più affidabile dell'etichetta `Creating` del portale.
+  - Nei file e nella CLI la regione è `northeurope`, non "North Europe".
+  - `az group delete` elimina anche l'assegnazione di ruolo Reader dell'es. 12 (OIDC): da riassegnare.
+- **Domanda tipo**: "push su GHCR negato con `GITHUB_TOKEN`" → `packages: write`; "impedire la pubblicazione di immagini con test falliti" → test in uno stage da cui dipende l'immagine finale; "container risponde ma viene riavviato di continuo" → percorso/porta della **liveness probe**; "togliere dal traffico senza riavviare" → **readiness probe**; "il workflow non compare in Actions" → percorso `.github/workflows/`.
+- **Ordine dei passi**: Dockerfile multi-stage → workflow `docker.yml` in `.github/workflows/` (con `packages: write`) → push sul branch → build + test + push su GHCR → verifica tag e visibilità del package → ACI dall'immagine pubblica → `/health` → liveness fallita (riavvii) → readiness fallita (nessun riavvio) → cancellare il resource group.
 
 ## 15. IaC con Bicep
 
