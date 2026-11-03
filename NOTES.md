@@ -399,11 +399,28 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 15. IaC con Bicep
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: Cloud Shell (Bash), file `main.bicep`, `main.bicepparam`, `storage.bicep`, `main-module.bicep` nella home; resource group `az400-lab-rg` (ricreato in `northeurope`); portale: *Resource group → Settings → Deployments*.
+- **Cosa fa**:
+  - **Bicep** = linguaggio dichiarativo **solo Azure**, si compila in un template **ARM** (JSON). Nessun file di stato (lo stato è Azure). Terraform/Pulumi = multi-cloud con file di stato; la guida cita solo ARM e Bicep.
+  - `param` (con default), `var`, `resource`, `output`; `uniqueString(resourceGroup().id)` per nomi globalmente unici (stesso resource group → stesso suffisso).
+  - **Parameter file** `main.bicepparam` (`using 'main.bicep'` + `param ... = ...`) sovrascrive i default.
+  - **`what-if`**: anteprima senza modifiche (`+` Create, `-` Delete, `~` Modify, `=` Nochange, `*` Ignore); può dare falsi positivi.
+  - **Mode**: `Incremental` (default) **lascia** le risorse non nel file; `Complete` le **elimina**.
+  - **`module`** = file Bicep richiamato da un altro; compilato diventa una risorsa `Microsoft.Resources/deployments` (deployment annidato ARM), il `name` del modulo è il nome del deployment figlio.
+- **Errore visto**:
+  1. `DeploymentNotFound` su `az deployment group show -n main`: con solo `--parameters main.bicepparam` il deployment si chiama `deployment1`; con `-f main.bicep` prende il nome del file (`main`, `main-module`).
+  2. `AccountNameInvalid` dentro `PreflightValidationCheckFailed` (esterno generico `InvalidTemplateDeployment`): nome dello storage con maiuscole/trattini/oltre 24 caratteri. La validazione avviene **prima** di creare: nulla a metà.
+  3. `Resource provider 'Microsoft.Network' ... is not registered. We are registering for you`: al primo uso di un servizio su una subscription nuova (si registra da solo).
+  4. what-if con `--mode Complete`: `- Delete vnet-extra`; con Incremental `* Ignore`. Il deploy reale in Complete l'ha cancellata.
+- **Trabocchetti**:
+  - Prima di un deploy in **Complete** fai sempre **what-if**: con un parametro diverso (altro prefisso → altro nome) cancelleresti anche lo storage esistente.
+  - Gli errori ARM/Bicep stanno negli **Inner Errors** (o in *Deployments*), non nel messaggio esterno.
+  - Nome dello storage account: 3-24 caratteri, solo minuscole e numeri.
+  - Stesso nome di deployment nello stesso scope = sovrascrive il precedente.
+  - **Creare** risorse = ARM/Bicep; **configurare** dentro la VM = DSC / Custom Script Extension (regola "segui il verbo").
+  - `az group delete` cancella anche le assegnazioni di ruolo sul resource group.
+- **Domanda tipo**: "rimuovere le risorse non presenti nel template" → `Complete`; "aggiungere senza toccare il resto" → `Incremental`; "vedere cosa cambierebbe prima del deploy" → `what-if`; "riusare un pezzo di infrastruttura" → `module` (ARM: template annidato/linked); "deployment fallito con `InvalidTemplateDeployment`" → inner errors; "storage name non valido" → 3-24 caratteri minuscoli.
+- **Ordine dei passi**: resource group → `main.bicep` (param, resource, output) → `what-if` → deploy con parameter file → controllo output/Deployments → rottura (nome non valido, preflight) → Incremental vs Complete (what-if poi deploy) → modulo (`module`, deploy, `az bicep build`) → cancellare il resource group.
 
 ## 16. Key Vault nella pipeline
 

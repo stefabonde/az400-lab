@@ -111,7 +111,8 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 ## Da portare in laboratorio
 
 - [x] es. 14: liveness vs readiness probe su ACI, container che si riavvia (`restartCount`) (fatto 2026-11-03)
-- [ ] es. 15: deployment annidato ARM / `module` Bicep, `mode` Incremental vs Complete; VM extension DSC e Custom Script
+- [x] es. 15: deployment annidato ARM / `module` Bicep, `mode` Incremental vs Complete (fatto 2026-11-03)
+- [ ] es. 15: VM extension DSC e Custom Script (non fatto: solo teoria)
 - [ ] es. 19: stessa query KQL su `requests` ed `exceptions`
 - [ ] es. 27: generare un SAS con scadenza breve, usarlo, farlo scadere
 - [ ] es. 28: widget Lead Time e Cycle Time
