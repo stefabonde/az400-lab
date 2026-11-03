@@ -26,7 +26,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 11. Azure Artifacts
 - [x] 12. GitHub Actions (matrix, secret, environment, OIDC)
 - [x] 13. Deployment strategies
-- [ ] 14. Container (Dockerfile + GHCR)
+- [x] 14. Container (Dockerfile + GHCR)
 - [ ] 15. IaC con Bicep
 - [ ] 16. Key Vault nella pipeline
 - [ ] 17. Dependabot, secret scanning, CodeQL
@@ -53,4 +53,4 @@ Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / A
 
 ## Prossimo passo
 
-Es. 14 (container). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 15 (Bicep). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
