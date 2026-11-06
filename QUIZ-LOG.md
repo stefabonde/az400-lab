@@ -108,6 +108,26 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 82 | Git | `git gc` per minimizzare il repo (hotspot) | ? | Dropdown 1 **`--aggressive`**; con `git reflog expire --expire=now --all` e `--prune=now`. Hotspot: Dropdown 2 non visto | es. 1 |
 | 83 | ACI | `restartCount` sale con evento "platform initiated", `exitCode: 0`: cosa controlli | X | **liveness probe** (percorso/porta); la readiness non riavvia mai, toglie solo dal traffico. Visto nel lab: 67 → 80 con liveness, fermo con readiness | es. 14 |
 | 84 | ARM / Bicep | deployment fallito con `InvalidTemplateDeployment`: dove cerchi la causa | X | negli **inner errors** (o *Resource group → Deployments*): l'errore esterno è generico. Visto nel lab: `AccountNameInvalid` dentro `PreflightValidationCheckFailed` | es. 15 |
+| 85 | Feature flag | rilascio graduale con interruttore a runtime | ? | **Azure App Configuration** (Feature Manager); rings / blue-green / canary = strategie, non flag | es. 24 |
+| 86 | Rete ibrida | ExpressRoute vs VPN Gateway | ? | **ExpressRoute** = connessione privata dedicata; **VPN Gateway** = tunnel cifrato su Internet | |
+| 87 | Pipeline | publish artifacts: App Center distribute / App Service Deploy (2 screenshot) | ? `!` | entrambe **No**; App Center **ritirato** | es. 6 |
+| 88 | Alert | regola + action group (domanda del 5/11, dettaglio non riportato) | ? | rule = **quando**; action group = **cosa fa** | es. 19 |
+| 89 | Jenkins + ACR | cosa creare per l'accesso al registry / cosa creare **in** Jenkins (2 domande) | ? `!` | Azure/Entra: **service principal** + ruolo `AcrPull`; in Jenkins: **credential**. Oggi: **managed identity** su VM Azure | es. 26 |
+| 90 | Release classica | il fulmine sull'artifact: la release parte dopo la build? | ? `!` | banco **No** (trigger CD non abilitato); fulmine artifact = CD, fulmine stage = pre-deployment. Dipende dall'immagine | es. 13 |
+| 91 | Build trigger | CI a ogni check-in / `include` / `batch` (3 domande) | ? | **Enable CI** = avvia; **batch** = una build per i commit accumulati (da solo non abilita il CI); **`include`** = quale branch. Leggi l'ultima riga | es. 6 |
+| 92 | Git | macchina nuova: clone o fork? / pull request o merge request? | ok | **clone** (copia locale; fork = server); **pull request** (merge request = GitLab) | es. 1 |
+| 93 | Monitor | salute di cluster AKS (Linux + Windows) e VM sottostanti | ok | **Azure Monitor** (Container Insights); Advisor = raccomandazioni | es. 29 |
+| 94 | Agent pool | gestire più server self-hosted insieme | ok | **agent pool**; resource group/Policy no; deployment pool = release classiche | es. 10 |
+| 95 | Slack | notifiche di build completata | ok | **`/azpipelines subscribe`** (prima `signin`); login/register non esistono | es. 28 |
+| 96 | Boards | scenario a più parti: sprint, avanzamento, pipeline, test, licenze | ? | iterazioni = divisione in sprint; **widget in dashboard** (burndown, velocity) = avanzamento; Mend = SCA; ZAP = DAST | es. 28 |
+| 97 | Jenkins + Azure | output del CI Jenkins su Storage | ? `!` | **plugin Azure Storage in Jenkins**; service connection Jenkins si crea in Azure DevOps. Datata | |
+| 98 | SonarQube | ordine dei task in pipeline .NET (Task3) | ? | **Prepare → VSBuild → Analyze → Publish**; Prepare prima della build | es. 22 |
+| 99 | Azure Repos | portare un repo GitHub: clonare è sufficiente? | ? | **No**: **Import repository**; clone = solo copia locale | es. 1 |
+| 100 | CLI | `az group create` / `az group deployment create` / `--template-file` e `az acr create` / `az acr build` (2 hotspot) | ? `!` | RG prima; file locale = `--template-file`, URL = `--template-uri`. Oggi: `az deployment group create`. `az acr build` = build + push in Azure | es. 14, 15 |
+| 101 | Container job | requisiti immagine (2 domande) e host dell'agent | ? | immagine: **Bash**, **nessun ENTRYPOINT**; host self-hosted: **Docker + permesso sul daemon**; root no | es. 14 |
+| 102 | App Center | SDK `AppCenter.Start` con `typeof(Analytics)` | ? `!` | servizio **ritirato**: non studiare, nessun lab | |
+| 103 | Config management | coerenza delle VM nel ciclo di vita: Custom Script / Puppet | ? | Custom Script = una tantum (**No**); **Puppet/Chef/DSC** = stato desiderato continuo (**Sì**) | es. 15 |
+| 104 | Release classica | secret visibile solo nello stage Release (2 domande) | ? | sezione **Variables** + **scope** = stage; lucchetto = secret | es. 8 |
 
 ## Da portare in laboratorio
 
@@ -125,6 +145,12 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 - [ ] es. 11: feed Azure Artifacts + upstream sources + pubblicare un pacchetto e usarlo come package source
 - [ ] es. 10: self-hosted agent con `clean: false` (build incrementale) e agent su rete on-prem
 - [ ] es. 16: ruolo RBAC senza `delete` sul Key Vault vs access policy
+- [ ] es. 14: `az acr create` + `az acr build` (build e push in Azure, senza Docker locale)
+- [ ] es. 14: container job con `container:` in pipeline (requisiti immagine: Bash, niente ENTRYPOINT)
+- [ ] es. 22: pipeline SonarQube/SonarCloud: Prepare → Build → Analyze → Publish
+- [ ] es. 28: widget Sprint Burndown / Velocity in dashboard; processi Agile / Scrum / CMMI / Basic
+- [ ] es. 8: variabile secret con scope di stage (release classica)
+- [ ] es. 1: Import repository da GitHub verso Azure Repos
 
 ## Nomi cambiati (vecchio → attuale)
 
@@ -153,6 +179,10 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | Cmdlet `AzureRm` (`Register-AzureRmAutomationDscNode`) | modulo **`Az`** (`Register-AzAutomationDscNode`) | AzureRm obsoleto |
 | Hosted VS 2017 (`vs2017-win2016`) | `windows-latest` / `ubuntu-latest` | immagine ritirata |
 | Copy and Publish Build Artifacts | `Publish Build Artifacts` / `Publish Pipeline Artifacts` | task deprecato |
+| `az group deployment create` | `az deployment group create` | sintassi vecchia deprecata |
+| Jenkins su VM Azure con service principal | **managed identity** (`AcrPull`) | Jenkins fuori dalla guida |
+| Azure Pipelines per Slack | `/azpipelines subscribe` | invariato; Teams: `@azure pipelines subscribe` |
+| SonarQube Cloud | ex **SonarCloud** | task `SonarQubePrepare@5` / `Analyze@5` / `Publish@5` |
 
 ## Test svolti
 
@@ -165,4 +195,5 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
 | 2026-11-03 | mini-quiz es. 14 | 4/5 | errata la 4 (liveness vs readiness: scelta la readiness) |
 | 2026-11-03 | mini-quiz es. 15 | 4/5 | errata la 3 (causa di `InvalidTemplateDeployment`: inner errors) |
+| 2026-11-05/06 | sessione di test (domande incollate in chat) | 36 domande, esiti non ancora registrati | voci 85-104; `?` = da confermare con Stefano. Ricorrenti (non riscritte): az keyvault hotspot (13), feed NuGet (4, 73), TFVC vs Git (77), self-hosted agent (43, 62, 74), processo CMMI (7), Teams/Slack subscribe (47), custom script (14) |
 | 2026-11-02 | sessione di test (domande incollate in chat) | esiti non ancora registrati | voci 62-82; esito `?` = da confermare con Stefano. Ricorrenti (non riscritte): DSC ConfigurationMode (29, 36), Lead/Cycle Time (9, 30), flaky (8), availability test (25), deployment groups (55), PMD/CheckStyle (2), analisi statica (33) |
