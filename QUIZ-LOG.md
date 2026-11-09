@@ -128,6 +128,57 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 102 | App Center | SDK `AppCenter.Start` con `typeof(Analytics)` | ? `!` | servizio **ritirato**: non studiare, nessun lab | |
 | 103 | Config management | coerenza delle VM nel ciclo di vita: Custom Script / Puppet | ? | Custom Script = una tantum (**No**); **Puppet/Chef/DSC** = stato desiderato continuo (**Sì**) | es. 15 |
 | 104 | Release classica | secret visibile solo nello stage Release (2 domande) | ? | sezione **Variables** + **scope** = stage; lucchetto = secret | es. 8 |
+| 105 | MS PA, branching | PR che deve deployare in produzione prima del merge (2 volte) | X | **GitHub Flow** (non centralized/forking/trunk-based) | es. 1 |
+| 106 | MS PA, Azure Repos | policy che condensa i commit in uno | ? | **Limit allowed merge types** (squash) | es. 1 |
+| 107 | MS PA, source | team che passa a Git: workflow semplice e controllato | ? | **PR + branch policy** (build, revisori, commenti); scarta complesso/senza controlli | es. 1 |
+| 108 | MS PA, Boards | lavoro bloccato in "In Progress": causa | ? | **Cumulative Flow Diagram** (diagnosi); poi WIP limit | es. 28 |
+| 109 | MS PA, Boards | work item per classi di servizio sulla Kanban | ? | **Swimlanes** | es. 20 |
+| 110 | MS PA, pipeline | aggiornare work item da una pipeline YAML | ? `!` | **Settings** della pipeline (link automatico dei work item): non verificato sul portale | es. 20 |
+| 111 | MS PA, KPI | tempo per completare un work item | X | **Lead Time** (ricorrente 9, 30: punto debole) | es. 28 |
+| 112 | MS PA, wiki | inizio di un diagramma | ? | **`::: mermaid`** (non i tre apici di GitHub) | es. 28 |
+| 113 | MS PA, Boards | tracciare il CVSS in una user story | ? | **campo** personalizzato nel processo ereditato | es. 20 |
+| 114 | MS PA, auth Git | clone con PAT e Git Credential Manager vietati, massima sicurezza | ? | **SSH** (Kerberos solo Server) | es. 18 |
+| 115 | MS PA, PAT | durata massima dei PAT con Entra ID | ? | policy **lifespan of a PAT** | es. 18 |
+| 116 | MS PA, GitHub | dove si crea un secret (2 risposte) | X | **organization** e **repository** (+ environment) | es. 12 |
+| 117 | MS PA, iOS | condividere un provisioning profile tra pipeline con permessi | X | **secure files** (variable group = solo valori) | es. 27 |
+| 118 | MS PA, ZAP | ridurre i falsi positivi di ZAP | X | **context file**; estensione = solo esecuzione, baseline = scansione passiva | es. 17 |
+| 119 | MS PA, CodeQL | eseguire la scansione ogni giorno lavorativo alle 8:00 | ? | sezione **schedule** (cron, UTC) | es. 12 |
+| 120 | MS PA, ZAP | cosa fa ZAP in pipeline | X | **penetration test passivi** (DAST); SAST/SCA = altri | es. 17 |
+| 121 | MS PA, release | bloccare il deploy in prod per alert su dev | ? | gate **Azure Monitor** (query alerts) | es. 13 |
+| 122 | MS PA, KQL | aggregare righe per valore di una colonna | ? | **summarize** (ricorrente 34) | es. 19 |
+| 123 | MS PA, App Insights | requisito per vedere le dipendenze nella Application Map | X `!` | scelta **chiamate HTTP di dipendenza**; non confermata | es. 19 |
+| 124 | MS PA, KQL | scegliere le colonne | ? | **project** (where = righe, summarize = aggrega) | es. 19 |
+| 125 | MS PA, Artifacts | gestore per codice .NET | ? | **NuGet** (ricorrente 4) | es. 11 |
+| 126 | MS PA, Artifacts | garanzia di retrocompatibilita' (SemVer) | X | **patch** (lettura Microsoft); mia risposta major sbagliata | es. 21 |
+| 127 | MS PA, Artifacts | gruppi pubblici/privati npm senza collisioni | X | **scopes** (`@org/pkg`) | es. 21 |
+| 128 | MS PA, Artifacts | feed che usa pacchetti originali, non copie | X `!` | **upstream sources**; non confermata | es. 21 |
+| 129 | MS PA, agent | UI test su agent Windows self-hosted | X | **Enable Autologon** (agent interattivo) | es. 10 |
+| 130 | MS PA, test | prestazioni prima del lancio | ? | **Azure Load Testing** (Azure DevOps load testing = nome vecchio) | es. 22 |
+| 131 | MS PA, release | 3 azioni di quality gate (qualita' e sicurezza) | X | **vulnerabilita' + code coverage + work item aperti**; sintassi (build) e manual intervention no | es. 13 |
+| 132 | MS PA, test | test con esiti diversi senza modifiche | ? | **flaky test detection** (ricorrente 8) | es. 22 |
+| 133 | MS PA, Azure | service principal che accede a storage1, minimo privilegio | ? `!` | scelto **Reader su storage1**; non confermata (manca ruolo dati) | es. 26 |
+| 134 | MS PA, test | problemi di esperienza sotto vari schemi d'uso, minimo sforzo | X | **load testing** in pipeline (non user tracking, stress, chaos) | es. 22 |
+| 135 | MS PA, YAML | URI che riferiscono un branch `features/tools` (2 risposte) | X `!` | scelte le due **`git://`**; non confermate | es. 23 |
+| 136 | MS PA, test | scaricare i file `.coverage` dal riepilogo della run | X | sezione **Related** (non Tests and Coverage) | es. 22 |
+| 137 | MS PA, agent | dove si aggiungono i parallel jobs | X | livello **organization** (non project) | es. 10 |
+| 138 | MS PA, YAML | raccolta di risorse con approval check | X | **environment** (gate = release classiche) | es. 7, 13 |
+| 139 | MS PA, microservizi | build a cascata tra repository | ? | **pipeline triggers + repository resources** | es. 23 |
+| 140 | MS PA, pipeline | build lunga di ore: cosa raccomandi | ? `!` | scelto **agent pool + parallel jobs**; non confermata | es. 23 |
+| 141 | MS PA, deploy | blue-green con staging e minimo sforzo | X | **App Service** (deployment slot e swap) | es. 24 |
+| 142 | MS PA, Traffic Manager | metodo che accetta endpoint IPv6 | X | **MultiValue** | |
+| 143 | MS PA, Traffic Manager | endpoint piu' vicino per latenza | ? | **Performance** (Geographic = posizione) | |
+| 144 | MS PA, release | disponibile a tutti insieme (individuare presto i problemi) | ? `!` | scelto **blue-green**; non confermata | es. 13 |
+| 145 | MS PA, release | attivare/disattivare una funzione senza redeploy | ? | **feature flags** | es. 24 |
+| 146 | MS PA, release | transizione incrementale (2 strategie) | ? `!` | scelte **canary + rolling**; non confermata | es. 13 |
+| 147 | MS PA, DSC | formato per pull server | X | **MOF** | es. 15 |
+| 148 | MS PA, IaC | ambienti coerenti e sicuri | ? | **template ARM dichiarativi** (oggi anche Bicep) | es. 15 |
+| 149 | MS PA, agent | durata massima di un job Microsoft-hosted | ? | **6 ore (360 min)**; gratuito privato 60 min | es. 10 |
+| 150 | MS PA, pipeline | pipeline lenta che blocca le altre: impostazione | ? `!` | scelta **multi-job configuration**; non confermata | es. 23 |
+| 151 | MS PA, trunk-based | passo dopo la creazione del feature branch | X | **adding commits** | es. 1 |
+| 152 | MS PA, source | molti contributori, stabilita' e indipendenza | ? | **rebase + policy con build e test** | es. 1 |
+| 153 | MS PA, source | sperimentazione isolata (2 elementi) | X | **naming dei feature branch + PR con revisori** | es. 1 |
+| 154 | MS PA, Git | eliminare file > 50 MB dalla storia | ? | **BFG** (aggiorna commit e tag) | es. 5 |
+| 155 | MS PA, LFS | oggetti LFS mancanti negli archivi di release | ? | impostazione **Include Git LFS objects in archives** | es. 5 |
 
 ## Da portare in laboratorio
 
@@ -151,6 +202,12 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 - [ ] es. 28: widget Sprint Burndown / Velocity in dashboard; processi Agile / Scrum / CMMI / Basic
 - [ ] es. 8: variabile secret con scope di stage (release classica)
 - [ ] es. 1: Import repository da GitHub verso Azure Repos
+- [ ] es. 10: agent Windows interattivo con autologon; parallel jobs a livello di organizzazione (Billing)
+- [ ] es. 22: scaricare `.coverage` (sezione Related); Azure Load Testing in pipeline con criteri di fallimento
+- [ ] es. 17: ZAP con context file; secret scanning con push protection
+- [ ] es. 20: campo personalizzato (CVSS) su un processo ereditato; swimlanes; Settings della pipeline per i work item
+- [ ] es. 18: policy PAT (lifespan) e SSH key per clone
+- [ ] es. 13: gate Azure Monitor e quality gate (vulnerabilita', coverage, work item aperti)
 
 ## Nomi cambiati (vecchio → attuale)
 
@@ -195,5 +252,6 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
 | 2026-11-03 | mini-quiz es. 14 | 4/5 | errata la 4 (liveness vs readiness: scelta la readiness) |
 | 2026-11-03 | mini-quiz es. 15 | 4/5 | errata la 3 (causa di `InvalidTemplateDeployment`: inner errors) |
+| 2026-11-09 | **Practice assessment ufficiale Microsoft Learn** (50 domande, 42 min) | **60%** (obiettivo 80%) | Per sezione (stime dallo screenshot): processi ~83%, strumentazione ~75%, source ~67%, **pipeline ~54%**, **sicurezza ~50%**. Voci 105-155. Sbagliate (confermate da Stefano, 22 voci): 105, 111, 116, 117, 118, 120, 123, 126, 127, 128, 129, 131, 134, 135, 136, 137, 138, 141, 142, 147, 151, 153 (oltre i ~20 attesi: probabile credito parziale sulle risposte multiple). Altre da confermare. Rifare dopo 2-3 settimane di studio |
 | 2026-11-05/06 | sessione di test (domande incollate in chat) | 36 domande, esiti non ancora registrati | voci 85-104; `?` = da confermare con Stefano. Ricorrenti (non riscritte): az keyvault hotspot (13), feed NuGet (4, 73), TFVC vs Git (77), self-hosted agent (43, 62, 74), processo CMMI (7), Teams/Slack subscribe (47), custom script (14) |
 | 2026-11-02 | sessione di test (domande incollate in chat) | esiti non ancora registrati | voci 62-82; esito `?` = da confermare con Stefano. Ricorrenti (non riscritte): DSC ConfigurationMode (29, 36), Lead/Cycle Time (9, 30), flaky (8), availability test (25), deployment groups (55), PMD/CheckStyle (2), analisi statica (33) |
