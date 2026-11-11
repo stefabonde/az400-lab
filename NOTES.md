@@ -501,11 +501,33 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 22. Test in pipeline: test task, risultati e code coverage, quality gate
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: repo ADO, branch `es22` (run manuale sul branch, niente PR), `test-pipeline.yml` (pipeline "az400-lab (5)"). Run → tab **Tests** e **Code Coverage**.
+- **Cosa fa**:
+  - Lo strumento di test produce i file: risultati **JUnit** (`test-results.xml`) e coverage **lcov** (`lcov.info`). In Node: `node --test --experimental-test-coverage --test-reporter=junit ... --test-reporter=lcov ...`.
+  - `PublishTestResults@2` (`testResultsFormat`: JUnit, NUnit, VSTest/TRX, xUnit, CTest) → tab **Tests**. `PublishCodeCoverageResults@2` (`summaryFileLocation`; accetta Cobertura, JaCoCo, lcov...) → tab **Code Coverage** (report di ReportGenerator).
+  - Tab Tests: pass percentage, fallimenti **New**/**Existing**, *Failing since*, filtro predefinito su Failed/Aborted, pulsanti **Bug** (crea un work item dal test fallito) e **Associate Test Case** (Test Plans).
+  - **Quality gate sulla coverage**: soglia nello strumento (`--test-coverage-lines=90`; .NET coverlet `Threshold`; JaCoCo) → step rosso anche se tutti i test passano.
+- **Errori visti**:
+  1. Tab Tests **assente** con run verde: log del publish `No Result Found to Publish '.../test-results.xml'` → il file c'era, ma i `<testcase>` non stavano dentro un `<testsuite>` (test senza `describe`). Lo step resta verde.
+  2. Test rotto (`/Ciao AZ-400/`): `AssertionError ... Bash exited with code '1'`; con `succeededOrFailed()` il publish gira e la tab mostra 1 fallito su 3 (66,66%).
+  3. Tolta la condition dal publish: `Skipping step due to condition evaluation`, **nessuna** tab Tests.
+  4. Funzione non testata: `75.00% line coverage does not meet threshold of 90%` → run rossa con 3/3 test passati.
+- **Trabocchetti**:
+  - Gli step di publish vanno sempre con `condition: succeededOrFailed()` (o `always()`): il default `succeeded()` li salta proprio quando i test falliscono.
+
+    | Condition | Gira se |
+    |---|---|
+    | `succeeded()` (default) | tutto OK prima |
+    | `succeededOrFailed()` | sempre tranne la run annullata |
+    | `always()` | sempre, anche se annullata |
+    | `failed()` | solo se qualcosa prima è fallito |
+
+  - `PublishTestResults@2` senza file = solo **warning** (`failTaskOnMissingResultsFile: true` per farlo fallire); con un formato sbagliato = nessun risultato e step verde. Per farlo fallire sui test rossi: `failTaskOnFailedTests: true`.
+  - Escludere i file di test dalla coverage (`--test-coverage-exclude=**/*.test.js`), altrimenti la percentuale è gonfiata.
+  - Varianti di quality gate: nello strumento (build rossa) → **branch policy + build validation** (blocca la PR) → `azurepipelines-coverage.yml` (status di **diff coverage** sulla PR) → **gates** delle release classic / **checks** sugli environment (Azure Monitor, query work item, REST, Azure Policy: bloccano il deploy) → SonarQube/SonarCloud.
+  - `VSTest@2` per .NET su Windows pubblica i risultati da solo; `DotNetCoreCLI@2 test` pubblica i TRX in automatico (`publishTestResults: true`).
+- **Domanda tipo**: "i risultati dei test non compaiono quando la build fallisce" → `condition: succeededOrFailed()` sul publish; "la build deve fallire se la coverage è sotto l'80%" → soglia nello strumento (o quality gate Sonar) + build validation; "vedere la coverage nella pipeline" → `PublishCodeCoverageResults@2` (Cobertura/JaCoCo); "creare un bug dal test fallito" → tab Tests → Bug; "bloccare il deploy se ci sono alert attivi" → gate/check Azure Monitor.
+- **Ordine dei passi**: test con reporter JUnit + coverage (soglia) → `PublishTestResults@2` (`succeededOrFailed()`) → `PublishCodeCoverageResults@2` (`succeededOrFailed()`) → run → tab Tests / Code Coverage → (build validation sulla branch policy per bloccare la PR).
 
 ## 23. `dependsOn`, parallelismo, ordine dei job, trigger complessi, GitHub repo -> Azure Pipelines
 

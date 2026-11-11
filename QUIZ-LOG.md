@@ -180,6 +180,9 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 154 | MS PA, Git | eliminare file > 50 MB dalla storia | ? | **BFG** (aggiorna commit e tag) | es. 5 |
 | 155 | MS PA, LFS | oggetti LFS mancanti negli archivi di release | ? | impostazione **Include Git LFS objects in archives** | es. 5 |
 | 156 | Key Vault | segreti del vault condivisi da più pipeline senza ripetere la configurazione | X | **variable group collegato al Key Vault** (Library); le variabili segrete della pipeline valgono per una sola pipeline e non leggono dal vault | es. 16 |
+| 157 | Test in pipeline | run verde, nessun file di risultati trovato: come far fallire | X | `failTaskOnMissingResultsFile: true`; `failTaskOnFailedTests` riguarda i test **falliti**, non il file mancante | es. 22 |
+| 158 | Quality gate | PR bloccata se coverage < 80%: due cose | X | **soglia nello strumento** + pipeline come **build validation** nella branch policy (una sola delle due non basta) | es. 22 |
+| 159 | Test in pipeline (ordine) | passi per vedere test e coverage | X | prima si **eseguono** i test (producono i file), poi i publish, poi le tab; il publish prima dei test non trova nulla | es. 22 |
 
 ## Da portare in laboratorio
 
