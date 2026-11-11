@@ -293,6 +293,7 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 - **Cosa fa**: il **variable group** raccoglie variabili riusabili da più pipeline; il **lucchetto** rende un valore segreto (non leggibile, mascherato nei log). Il **template** evita di ripetere gli stessi passi e accetta `parameters` con tipo e valore di default.
 - **Visto nei log**: variabile normale stampata; variabile segreta stampata come `***`.
 - **Trabocchetti**: il gruppo va **autorizzato** alla pipeline (*Permit* alla prima esecuzione, o Library → gruppo → Security → Pipeline permissions). `${{ parameters.x }}` è valutato in **compilazione**, `$(var)` a **runtime**. Il mascheramento non è una protezione completa: se trasformi il valore (`rev`, `base64`) non viene più riconosciuto. I segreti non arrivano come variabili d'ambiente ai passi se non li mappi con `env:`. Togliendo `- group:` il `$(VAR)` resta testo letterale, senza errore.
+- **Variabili usate**: `APP_NAME` (normale), `API_KEY` (segreta) nel gruppo `app-config` (ricreate l'11/11 dopo l'errore 5 dell'es. 16).
 - **Alternative**: variable group collegato ad **Azure Key Vault** (esercizio 16); *secure files* per file sensibili (27).
 - **Domanda tipo**: "evita di duplicare i passi in più pipeline" → template; "rendi la chiave non visibile ai membri del team" → variabile segreta nel group / Key Vault.
 
@@ -424,11 +425,39 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 16. Key Vault nella pipeline
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: portale → resource group `az400-lab-rg` (northeurope) → Key vault `kv-az400lab-k400` (modello **Azure RBAC**) → *Objects → Secrets* e *Access control (IAM)*. ADO: `kv-pipeline.yml` (pipeline dedicata), *Pipelines → Library → + Variable group* (`kv-secrets`, collegato al vault).
+- **Cosa fa**:
+  - **Control plane** (gestione del vault come risorsa: Owner/Contributor/Reader) contro **data plane** (segreti, chiavi, certificati: solo ruoli **Key Vault \***, che hanno le `DataActions`).
+  - Ruoli: *Administrator* (tutto il data plane), **Secrets Officer** (crea/modifica segreti), **Secrets User** (legge il valore: pipeline/app), *Reader* (solo metadati, **non** i valori), *Certificates Officer* (solo certificati).
+  - Due modi di leggere i segreti in pipeline:
+
+    | | Task `AzureKeyVault@2` | Variable group collegato |
+    |---|---|---|
+    | Configurazione | nel YAML (`azureSubscription`, `KeyVaultName`, `SecretsFilter`) | Library, toggle *Link secrets from an Azure key vault* |
+    | Riuso | da copiare in ogni pipeline | un gruppo per tante pipeline |
+    | Variabili normali | sì (nel YAML) | **no**: il gruppo contiene solo segreti del vault |
+
+  - Ogni segreto diventa una **secret variable** `$(app-secret)`: nei log `***`; negli script arriva solo se mappato con `env:`.
+- **Errori visti**:
+  1. Creazione del segreto da **Owner**: `Forbidden ... not allowed by RBAC ... Action: secrets/setSecret/action ... Assignment: (not found)` → Owner è control plane. Poi assegnato per sbaglio *Key Vault **Certificates** Officer* (stesso errore) → corretto con **Secrets** Officer.
+  2. Build validation della PR: `The subscription of '<id>' doesn't exist in cloud 'AzureCloud'` → la service connection aveva perso ogni ruolo (resource group cancellato all'es. 14). Corretto con **Reader** sul resource group all'app della service connection.
+  3. Nuova pipeline: *Permission needed — Service connection azure-lab* → **Permit**.
+  4. `AzureKeyVault@2`: `app-secret: Caller is not authorized to perform action on resource` (con il solo Reader sul resource group) → **Key Vault Secrets User** sul vault all'app della service connection. Il task allega `ProvisionKeyVaultPermissions.ps1` (access policy): inutile sul modello RBAC.
+  5. `Variable group was not found or is not authorized for use` (nome **vuoto** nel messaggio): avevo attivato il link al vault sul gruppo esistente `app-config` invece di crearne uno nuovo → le variabili dell'es. 8 sono state **rimosse**.
+  6. Nuovo variable group: *Permission needed — Variable group kv-secrets* → **Permit**.
+- **Trabocchetti**:
+  - Owner della subscription **non** legge né scrive segreti su un vault RBAC: serve un ruolo data plane (ma l'Owner può assegnarselo da solo).
+  - *Secrets* contro *Certificates* contro *Keys*: i nomi dei ruoli si somigliano.
+  - Modello **access policy** (vecchio): *Access policies → Get, List* sui Secrets. Modello **RBAC**: ruolo. Prima guarda quale modello usa il vault (*Settings → Access configuration*).
+  - In *Select members* i service principal **non** compaiono nell'elenco iniziale: va scritto il nome (lo trovi in ADO → Service connection → *Manage App registration*, o nell'IAM dove ha già un ruolo).
+  - Propagazione RBAC: 1-2 minuti (anche di più) prima che il nuovo ruolo funzioni.
+  - Doppio livello: **ADO** (Permit / Pipeline permissions sulla risorsa protetta) e **Azure** (RBAC sull'identità della service connection).
+  - `doesn't exist in cloud 'AzureCloud'` non vuol dire ID sbagliato: l'identità non ha **nessun ruolo** sulla subscription.
+  - "Variable group not found or not authorized": due cause (non esiste con quel nome / non autorizzato); il nome nel messaggio può mancare.
+  - **Soft-delete** sempre attivo (7-90 giorni, default 90): dopo la cancellazione il nome del vault resta occupato → *Key vaults → Manage deleted vaults → Recover / Purge*. Con **purge protection** il purge è impossibile fino alla scadenza (e non si disattiva).
+  - Il mascheramento `***` riguarda solo l'output: il valore arriva comunque allo script.
+- **Domanda tipo**: "la pipeline deve leggere i segreti con privilegio minimo" → Key Vault **Secrets User** all'identità della service connection; "condividere i segreti del vault tra più pipeline" → variable group collegato al Key Vault; "Owner non riesce a creare un segreto" → manca un ruolo data plane (Secrets Officer); "ricreare un vault con lo stesso nome dopo la cancellazione" → purge (o recover) del vault in soft-delete; "impedire la cancellazione definitiva" → purge protection.
+- **Ordine dei passi**: resource group → Key vault (modello RBAC) → Secrets Officer a te → segreto → ruolo all'identità della service connection (Secrets User sul vault) → YAML con `AzureKeyVault@2` (o variable group collegato + `- group:`) → Permit della risorsa → run (`***`) → pulizia (variable group, resource group; vault in soft-delete).
 
 ## 17. Dependabot, secret scanning, CodeQL
 

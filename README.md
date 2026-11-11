@@ -28,7 +28,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 - [x] 13. Deployment strategies
 - [x] 14. Container (Dockerfile + GHCR)
 - [x] 15. IaC con Bicep
-- [ ] 16. Key Vault nella pipeline
+- [x] 16. Key Vault nella pipeline
 - [ ] 17. Dependabot, secret scanning, CodeQL
 - [ ] 18. Permessi Azure DevOps
 - [ ] 19. Application Insights, alert, KQL
@@ -53,4 +53,4 @@ Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / A
 
 ## Prossimo passo
 
-Es. 16 (Key Vault nella pipeline). Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 17 (Dependabot, secret scanning, CodeQL). Es. 16 completato (Key Vault RBAC: control plane vs data plane, `AzureKeyVault@2` e variable group collegato, soft-delete: scheda 16). Nota: la build validation su `main` in ADO fallisce finché `az400-lab-rg` non esiste e la service connection non ha Reader. Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").

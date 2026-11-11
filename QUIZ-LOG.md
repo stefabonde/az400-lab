@@ -179,6 +179,7 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 153 | MS PA, source | sperimentazione isolata (2 elementi) | X | **naming dei feature branch + PR con revisori** | es. 1 |
 | 154 | MS PA, Git | eliminare file > 50 MB dalla storia | ? | **BFG** (aggiorna commit e tag) | es. 5 |
 | 155 | MS PA, LFS | oggetti LFS mancanti negli archivi di release | ? | impostazione **Include Git LFS objects in archives** | es. 5 |
+| 156 | Key Vault | segreti del vault condivisi da più pipeline senza ripetere la configurazione | X | **variable group collegato al Key Vault** (Library); le variabili segrete della pipeline valgono per una sola pipeline e non leggono dal vault | es. 16 |
 
 ## Da portare in laboratorio
 
