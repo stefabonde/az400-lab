@@ -39,7 +39,7 @@ Spunta man mano. Per ognuno: fai, rompi, annota.
 Priorità alta (area pipeline, 50-55%): 21-25.
 
 - [ ] 21. Feed con views e upstream, versioning SemVer/CalVer, GitHub Packages
-- [ ] 22. Test in pipeline: test task, risultati e code coverage, quality gate
+- [x] 22. Test in pipeline: test task, risultati e code coverage, quality gate
 - [ ] 23. `dependsOn`, parallelismo, ordine dei job, trigger complessi, GitHub repo -> Azure Pipelines
 - [ ] 24. Deployment slot e swap su App Service, feature flag con Azure App Configuration
 - [ ] 25. Retention artifact, migrazione classic -> YAML, pipeline analytics
@@ -67,4 +67,4 @@ Calendario di recupero (2 esercizi al giorno, deciso l'11/11):
 
 Margine 21-26/11 (recuperi e lab a freddo), dal 27/11 quiz e simulazioni.
 
-Es. 22 (vedi calendario). Es. 16 completato (Key Vault RBAC: control plane vs data plane, `AzureKeyVault@2` e variable group collegato, soft-delete: scheda 16). Nota: la build validation su `main` in ADO fallisce finché `az400-lab-rg` non esiste e la service connection non ha Reader. Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 23 (vedi calendario). Es. 22 completato (11/11, anticipato: JUnit + lcov, `succeededOrFailed()`, soglia coverage: scheda 22). Es. 16 completato (Key Vault RBAC: control plane vs data plane, `AzureKeyVault@2` e variable group collegato, soft-delete: scheda 16). Nota: la build validation su `main` in ADO fallisce finché `az400-lab-rg` non esiste e la service connection non ha Reader. Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
