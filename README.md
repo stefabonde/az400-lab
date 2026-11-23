@@ -40,7 +40,7 @@ Priorità alta (area pipeline, 50-55%): 21-25.
 
 - [ ] 21. Feed con views e upstream, versioning SemVer/CalVer, GitHub Packages
 - [x] 22. Test in pipeline: test task, risultati e code coverage, quality gate
-- [ ] 23. `dependsOn`, parallelismo, ordine dei job, trigger complessi, GitHub repo -> Azure Pipelines
+- [x] 23. `dependsOn`, parallelismo, ordine dei job, trigger complessi, GitHub repo -> Azure Pipelines
 - [ ] 24. Deployment slot e swap su App Service, feature flag con Azure App Configuration
 - [ ] 25. Retention artifact, migrazione classic -> YAML, pipeline analytics
 - [ ] 26. Service principal vs managed identity; `GITHUB_TOKEN`, GitHub App, PAT
@@ -55,18 +55,17 @@ Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / A
 
 ## Prossimo passo
 
-Calendario di recupero (2 esercizi al giorno, deciso l'11/11):
+Calendario di recupero (2 esercizi al giorno, rifatto il 23/11):
 
 | Giorno | Mattina | Pomeriggio |
 |---|---|---|
-| gio 12/11 | 22. Test, coverage, quality gate | 23. `dependsOn`, parallelismo, trigger |
-| ven 13/11 | 21. Feed: views, upstream, SemVer | 25. Retention, classic -> YAML, analytics |
-| lun 16/11 | 24. Slot e swap (S1!), feature flag | 19. Application Insights, alert, KQL |
-| mar 17/11 | 29. Alert pipeline, VM/Container Insights | 18. Permessi ADO |
-| mer 18/11 | 26. SP vs managed identity, token GitHub | 27. Secure files, leak, access level |
-| gio 19/11 | 17. Dependabot, secret scanning, CodeQL | 20. Boards <-> GitHub |
-| ven 20/11 | 28. Dashboard, wiki, webhook | 30. Git recovery |
+| mar 24/11 | 21. Feed: views, upstream, SemVer | 25. Retention, classic -> YAML, analytics |
+| mer 25/11 | 24. Slot e swap (S1!), feature flag | 19. Application Insights, alert, KQL |
+| gio 26/11 | 29. Alert pipeline, VM/Container Insights | 18. Permessi ADO |
+| ven 27/11 | 26. SP vs managed identity, token GitHub | 27. Secure files, leak, access level |
+| lun 30/11 | 17. Dependabot, secret scanning, CodeQL | 20. Boards <-> GitHub |
+| mar 1/12 | 28. Dashboard, wiki, webhook | 30. Git recovery |
 
-Margine 21-26/11 (recuperi e lab a freddo), dal 27/11 quiz e simulazioni.
+Dal 2/12 al 9/12: quiz, practice assessment, lab a freddo sui punti deboli.
 
-Es. 23 (vedi calendario). Es. 22 completato (11/11, anticipato: JUnit + lcov, `succeededOrFailed()`, soglia coverage: scheda 22). Es. 16 completato (Key Vault RBAC: control plane vs data plane, `AzureKeyVault@2` e variable group collegato, soft-delete: scheda 16). Nota: la build validation su `main` in ADO fallisce finché `az400-lab-rg` non esiste e la service connection non ha Reader. Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").
+Es. 21 (vedi calendario). Es. 23 completato (23/11: `dependsOn` e parallel jobs, `dependencies` vs `stageDependencies`, trigger CI/paths/schedule/pipeline completion: scheda 23). Es. 22 completato (11/11, anticipato: JUnit + lcov, `succeededOrFailed()`, soglia coverage: scheda 22). Es. 16 completato (Key Vault RBAC: control plane vs data plane, `AzureKeyVault@2` e variable group collegato, soft-delete: scheda 16). Nota: la build validation su `main` in ADO fallisce finché `az400-lab-rg` non esiste e la service connection non ha Reader. Es. 15 completato (Bicep: what-if, parameter file, Incremental vs Complete, module: scheda 15). Es. 14 completato (multi-stage con test, push su GHCR, ACI con liveness e readiness: scheda 14). Es. 13 completato (runOnce hooks, rollback, canary non supportato su environment senza risorse: scheda 13). Es. 12 completato (matrice, secret, environment, OIDC: scheda 12 di `NOTES.md`). Esame: **10 dicembre 2026**. Mappa guida ufficiale in `NOTES.md` ("Guida ufficiale ↔ esercizi").

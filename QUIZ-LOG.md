@@ -183,6 +183,10 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 157 | Test in pipeline | run verde, nessun file di risultati trovato: come far fallire | X | `failTaskOnMissingResultsFile: true`; `failTaskOnFailedTests` riguarda i test **falliti**, non il file mancante | es. 22 |
 | 158 | Quality gate | PR bloccata se coverage < 80%: due cose | X | **soglia nello strumento** + pipeline come **build validation** nella branch policy (una sola delle due non basta) | es. 22 |
 | 159 | Test in pipeline (ordine) | passi per vedere test e coverage | X | prima si **eseguono** i test (producono i file), poi i publish, poi le tab; il publish prima dei test non trova nulla | es. 22 |
+| 160 | Variabili tra stage | job di un altro stage legge una variabile di output | X | `stageDependencies.Stage.Job.outputs['step.var']`; `dependencies.Stage.outputs['Job.step.var']` vale solo nella **condition** di uno stage | es. 23 |
+| 161 | Pipeline completion trigger | B non parte dopo A su un branch nuovo: 2 correzioni | ½ | aggiornare i filtri nello YAML del **Default branch for manual and scheduled builds** **oppure** cambiare quel branch | es. 23 |
+| 162 | Schedule (ordine) | build notturna YAML che sostituisce una schedule UI | ½ | **prima togliere la schedule dalla UI** (prevale sullo YAML) → cron in UTC → commit sul branch → Scheduled runs | es. 23 |
+| 163 | Schedule e branch | schedule solo nello YAML di main con include `es23`: `es23` viene schedulato? | X | **no**: conta lo YAML **di quel branch** | es. 23 (previsione 10) |
 
 ## Da portare in laboratorio
 
@@ -256,6 +260,7 @@ Esito: `X` sbagliata · `?` indovinata / incerta · `!` sospetta (risposta del b
 | 2026-10-22 | mini-quiz es. 13 | 4/5 | errata la 1 (hook `on: failure` scambiato con `preDeploy`) |
 | 2026-11-03 | mini-quiz es. 14 | 4/5 | errata la 4 (liveness vs readiness: scelta la readiness) |
 | 2026-11-03 | mini-quiz es. 15 | 4/5 | errata la 3 (causa di `InvalidTemplateDeployment`: inner errors) |
+| 2026-11-23 | mini-quiz es. 23 | 2/5 + 2 a metà | errata la 2 (`stageDependencies`), parziali 4 (manca a) e 5 (manca D: schedule UI); voci 160-163 |
 | 2026-11-09 | **Practice assessment ufficiale Microsoft Learn** (50 domande, 42 min) | **60%** (obiettivo 80%) | Per sezione (stime dallo screenshot): processi ~83%, strumentazione ~75%, source ~67%, **pipeline ~54%**, **sicurezza ~50%**. Voci 105-155. Sbagliate (confermate da Stefano, 22 voci): 105, 111, 116, 117, 118, 120, 123, 126, 127, 128, 129, 131, 134, 135, 136, 137, 138, 141, 142, 147, 151, 153 (oltre i ~20 attesi: probabile credito parziale sulle risposte multiple). Altre da confermare. Rifare dopo 2-3 settimane di studio |
 | 2026-11-05/06 | sessione di test (domande incollate in chat) | 36 domande, esiti non ancora registrati | voci 85-104; `?` = da confermare con Stefano. Ricorrenti (non riscritte): az keyvault hotspot (13), feed NuGet (4, 73), TFVC vs Git (77), self-hosted agent (43, 62, 74), processo CMMI (7), Teams/Slack subscribe (47), custom script (14) |
 | 2026-11-02 | sessione di test (domande incollate in chat) | esiti non ancora registrati | voci 62-82; esito `?` = da confermare con Stefano. Ricorrenti (non riscritte): DSC ConfigurationMode (29, 36), Lead/Cycle Time (9, 30), flaky (8), availability test (25), deployment groups (55), PMD/CheckStyle (2), analisi statica (33) |
