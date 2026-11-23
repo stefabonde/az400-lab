@@ -51,6 +51,8 @@ Priorità alta (area pipeline, 50-55%): 21-25.
 
 Solo teoria: Scalar e cross-repo sharing, Azure Deployment Environments, DSC / Azure Machine Configuration, Defender for Cloud DevOps Security.
 
+> **Ritiro AZ-400 (1/2/2027).** Dopo il 10/12: **AZ-401** (*Agentic DevOps Engineer Expert* = AZ-401 + AZ-104, che c'e' gia'). Stesse 5 aree + agenti AI/Copilot: riusare NOTES e quiz, aggiungere i moduli AI.
+
 ## Prossimo passo
 
 Calendario di recupero (2 esercizi al giorno, deciso l'11/11):
