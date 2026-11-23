@@ -531,11 +531,43 @@ Nota: il banco SkillCertPro e' indietro rispetto alla guida (Jenkins, TFVC, rele
 
 ## 23. `dependsOn`, parallelismo, ordine dei job, trigger complessi, GitHub repo -> Azure Pipelines
 
-- **Dove**: 
-- **Cosa fa**: 
-- **Errore visto**: 
-- **Trabocchetti**: 
-- **Domanda tipo**: 
+- **Dove**: repo ADO, branch `es23` (run manuali sul branch, niente PR). `jobs-pipeline.yml` (pipeline **jobs-lab**) e `stages-pipeline.yml` (pipeline **stages-lab**). Vista Jobs della run (orari Queued/Started), ⋮ → **Scheduled runs**, Edit → ⋮ → **Triggers** → YAML → Get sources.
+- **Cosa fa**:
+  - Fan-out/fan-in: Build → (UnitTest ‖ Lint) → Package con `dependsOn` (anche una lista). `dependsOn` dice cosa **può** girare in parallelo; quanti job girano davvero lo decidono i **parallel jobs** dell'org (free Microsoft-hosted = 1) o gli agent liberi.
+  - Variabile di output: step con `name: setver` + `##vso[task.setvariable variable=appVersion;isOutput=true]...`.
+
+    | Dove la leggi | Sintassi |
+    |---|---|
+    | job → job, **stesso stage** | `$[ dependencies.<Job>.outputs['<step>.<var>'] ]` (con `dependsOn` **diretto** sul job) |
+    | job → job, **altro stage** | `$[ stageDependencies.<Stage>.<Job>.outputs['<step>.<var>'] ]` |
+    | **condition di uno stage** | `dependencies.<Stage>.outputs['<Job>.<step>.<var>']` |
+
+  - Trigger:
+
+    | Trigger | Quale YAML conta |
+    |---|---|
+    | CI `trigger:` (branches/paths/tags include-exclude, `batch`) | lo YAML del **branch su cui fai push** |
+    | `schedules:` (cron in **UTC**, niente ora legale; `always: false` = solo se ci sono modifiche) | lo YAML **di ciascun branch**: il branch deve stare nell'`include` del **proprio** YAML |
+    | pipeline completion (`resources.pipelines` + `trigger`) | lo YAML del branch impostato in **Default branch for manual and scheduled builds** (default = main) |
+    | `pr:` | vale per GitHub/Bitbucket; su **Azure Repos è ignorato** → branch policy → Build validation |
+    | trigger impostati nella **UI** | **prevalgono** sullo YAML (override); vanno tolti perché lo YAML conti |
+
+- **Errori visti**:
+  1. UnitTest e Lint con lo stesso `dependsOn: Build` in fila: Lint *Queued 14:25*, *Started 14:26*, stesso agent "Azure Pipelines 1" → 1 parallel job (link "manage parallel jobs" nel log).
+  2. Package con `dependsOn: [UnitTest, Lint]` legge `dependencies.Build...` → `versione ''`, run **verde**. Fix: aggiungere `Build` al `dependsOn`.
+  3. Job di un altro stage con `dependencies.Build.B.outputs[...]` → vuoto, run verde. Fix: `stageDependencies.Build.B.outputs['setver.appVersion']`.
+  4. Stage Deploy e Prod entrambi dipendenti solo da Build: girati in fila, e **Prod prima di Deploy** (l'ordine nel file non conta).
+  5. Commit su `src/app.js` → partite **2 run**: le pipeline (6) e (7) usavano lo stesso YAML (il trigger sta nel file, quindi parte ogni pipeline che lo usa).
+  6. Pipeline completion trigger su un branch non di default: stages-lab **non parte** (il file non esiste su main, branch di default). Fix: Default branch for manual and scheduled builds = `es23` → "Automatically triggered by upstream/..." (`upstream` è l'**alias** della risorsa).
+- **Trabocchetti**:
+  - Variabile di output vuota = **nessun errore**, run verde: controllare `name:` dello step, `isOutput=true`, `dependsOn` diretto, `dependencies` vs `stageDependencies`.
+  - Commit di un file fuori dal filtro `paths` → nessuna run (anche se è lo YAML stesso).
+  - `0 7 * * 1-5` = 08:00 in Italia d'inverno (la vista Scheduled runs mostra l'ora locale); in estate diventa 09:00.
+  - Pipeline in una cartella: `source: '\cartella\nome'`; in un altro progetto serve `project:`.
+  - CI trigger + pipeline completion trigger sulla stessa pipeline nello stesso repo = **2 run** per push → `trigger: none` sulla seconda.
+  - `pool` con 1 parallel job: aumentare i parallel jobs (Organization settings → Parallel jobs) o usare agent self-hosted.
+- **Domanda tipo**: "i job non girano in parallelo" → parallel jobs; "la variabile tra stage è vuota" → `stageDependencies`; "la schedule YAML non parte" → schedule nella UI che prevale, oppure branch non incluso nello YAML di quel branch; "la pipeline B non parte dopo A su un nuovo branch" → filtri nello YAML del Default branch for manual and scheduled builds; "validare le PR su Azure Repos" → branch policy, non `pr:`.
+- **Ordine dei passi** (schedule): togliere le schedule della UI → `schedules:` con cron in UTC e `branches: include` → commit **sul branch da schedulare** → ⋮ Scheduled runs per verificare.
 
 ## 24. Deployment slot e swap su App Service, feature flag con Azure App Configuration
 
